@@ -1,5 +1,5 @@
 <x-template-dashboard active="users">
-    <div class="w-full p-3">
+    <div class="w-full p-7">
         <form action="/dashboard/users/store" method="POST" enctype="multipart/form-data">
             <h1 class="text-4xl">{{ lang('users.create') }}</h1>
 

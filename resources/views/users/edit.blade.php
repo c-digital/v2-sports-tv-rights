@@ -1,6 +1,6 @@
 <x-template-dashboard title="Editar usuario" active="users">
     <div x-init="$watch('photo', value => preview(value))">
-        <div class="w-full p-3">
+        <div class="w-full p-7">
             <h1 class="text-4xl">{{ lang('users.edit') }}</h1>
 
             <hr class="my-5">

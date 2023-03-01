@@ -19,6 +19,9 @@ $route->auth();
 // Dashboard
 $route->get('/dashboard', [DashboardController::class, 'index']);
 
+$route->get('/league', LeagueController::class);
+$route->get('/cup', CupController::class);
+
 // Users
 $route->resource('/dashboard/users', UserController::class);
 $route->get('/dashboard/users/2fa/{id}', [UserController::class, 'two_fa']);

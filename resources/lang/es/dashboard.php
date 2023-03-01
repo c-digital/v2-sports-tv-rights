@@ -7,4 +7,6 @@ return [
     'profile' => 'Perfil',
     'text' => 'Has iniciado sesión',
     'users' => 'Usuarios',
+    'league' => 'Liga',
+    'cup' => 'Copa',
 ];

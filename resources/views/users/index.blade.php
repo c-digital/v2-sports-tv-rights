@@ -1,5 +1,5 @@
 <x-template-dashboard active="users">
-	<div class="w-full p-3">
+	<div class="w-full p-7">
         <h1 class="text-3xl mb-4">{{ lang('users.users') }}</h1>
 
         <div class="grid grid-cols-2 mb-5">

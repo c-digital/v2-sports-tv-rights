@@ -16,6 +16,12 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<style>
+    .wg_modal {
+        z-index: 100 !important;
+    }
+</style>
+
 </head>
 
 <body x-data="app()" class="bg-gray-100 font-sans leading-normal tracking-normal">
@@ -23,7 +29,7 @@
         <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
             <div class="w-1/2 pl-2 md:pl-0">
                 <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href="/dashboard">
-                    <img class="w-16" src="{{ asset('img/logo.jpg') }}" alt="Logo">
+                    <img class="w-1/3" src="{{ asset('img/logo-index.png') }}" alt="Logo">
                 </a>
             </div>
 
@@ -74,6 +80,18 @@
                     </li>
 
                     <li class="mr-6 my-2 md:my-0">
+                        <a href="/league" class="{{ ($active == 'league') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
+                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.league') }}</span>
+                        </a>
+                    </li>
+
+                    <li class="mr-6 my-2 md:my-0">
+                        <a href="/cup" class="{{ ($active == 'cup') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
+                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.cup') }}</span>
+                        </a>
+                    </li>
+
+                    <li class="mr-6 my-2 md:my-0">
                         <a href="/dashboard/users" class="{{ ($active == 'users') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
                             <i class="fas fa-users fa-fw mr-3"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.users') }}</span>
                         </a>
@@ -99,5 +117,7 @@
     <script src="{{ node('alpinejs/dist/cdn.js') }}" defer></script>
     <script src="{{ node('sweetalert2/dist/sweetalert2.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
+
+    <script type="module" src="https://widgets.api-sports.io/2.0.3/widgets.js"></script>
 </body>
 </html>
