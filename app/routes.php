@@ -19,8 +19,16 @@ $route->auth();
 // Dashboard
 $route->get('/dashboard', [DashboardController::class, 'index']);
 
-$route->get('/league', LeagueController::class);
-$route->get('/cup', CupController::class);
+$route->get('/bolivia/liga', [BoliviaController::class, 'liga']);
+$route->get('/bolivia/copa', [BoliviaController::class, 'copa']);
+
+$route->get('/españa/liga', [EspañaController::class, 'liga']);
+$route->get('/españa/copa', [EspañaController::class, 'copa']);
+
+$route->get('/inglaterra/liga', [InglaterraController::class, 'liga']);
+
+$route->get('/europa/champions', [EuropaController::class, 'champions']);
+$route->get('/europa/europa', [EuropaController::class, 'europa']);
 
 // Users
 $route->resource('/dashboard/users', UserController::class);

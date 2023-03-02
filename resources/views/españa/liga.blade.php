@@ -1,6 +1,6 @@
-<x-template-dashboard active="cup">
+<x-template-dashboard active="españa.liga">
 	<div class="w-full p-7">
-        <h1 class="text-3xl mb-4">{{ lang('matches.matches') }}</h1>
+        <h1 class="text-3xl mb-4">{{ 'Liga España' }}</h1>
 
         <x-alert></x-alert>
 
@@ -9,8 +9,8 @@
 				data-host="v3.football.api-sports.io"
 				data-key="76e449a048284c4ad2336531b8c06ab2"
 				data-date="{{ now('Y-m-d') }}"
-				data-league="964"
-				data-season="{{ now('Y') }}"
+				data-league="140"
+				data-season="{{ '2022' }}"
 				data-theme=""
 				data-refresh="15"
 				data-show-toolbar="true"
