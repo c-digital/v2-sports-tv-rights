@@ -30,6 +30,8 @@ $route->get('/inglaterra/liga', [InglaterraController::class, 'liga']);
 $route->get('/europa/champions', [EuropaController::class, 'champions']);
 $route->get('/europa/europa', [EuropaController::class, 'europa']);
 
+$route->get('/api', [ApiController::class, 'index']);
+
 // Users
 $route->resource('/dashboard/users', UserController::class);
 $route->get('/dashboard/users/2fa/{id}', [UserController::class, 'two_fa']);

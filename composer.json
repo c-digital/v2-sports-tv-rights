@@ -19,7 +19,8 @@
         "illuminate/validation": "9.50.1",
         "illuminate/view": "9.50.1",
         "league/flysystem": "3.12.2",
-        "phpmailer/phpmailer": "6.7.1"
+        "phpmailer/phpmailer": "6.7.1",
+        "guzzlehttp/guzzle": "^7.5@dev"
     },
     "require-dev": {
         "fakerphp/faker": "1.21.0",
