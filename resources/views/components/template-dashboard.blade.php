@@ -73,55 +73,61 @@
 
             <div x-show="showMainMenu" class="mainMenu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:block mt-2 lg:mt-0 bg-white z-20">
                 <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/dashboard" class="{{ ($active == 'home') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-home fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.home') }}</span>
+                            <i class="fas fa-home fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.home') }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/bolivia/liga" class="{{ ($active == 'bolivia.liga') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga Bolivia' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga Bolivia' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/bolivia/copa" class="{{ ($active == 'bolivia.copa') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Copa Bolivia' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Copa Bolivia' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/españa/liga" class="{{ ($active == 'españa.liga') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga España' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga España' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/españa/copa" class="{{ ($active == 'españa.copa') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Copa del Rey' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Copa del Rey' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/inglaterra/liga" class="{{ ($active == 'inglaterra.liga') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga Inglaterra' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga Inglaterra' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/europa/champions" class="{{ ($active == 'europa.champions') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Champions League' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Champions League' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
                         <a href="/europa/europa" class="{{ ($active == 'europa.europa') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-futbol fa-fw mr-3 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Europa League' }}</span>
+                            <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Europa League' }}</span>
                         </a>
                     </li>
 
-                    <li class="mr-6 my-2 md:my-0">
+                    <li class="mr-2 my-2 md:my-0">
+                        <a href="/json" class="{{ ($active == 'json') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
+                            <i class="fas fa-download fa-fw mr-2"></i> <span class="pb-1 md:pb-0 text-sm">Descargar JSON</span>
+                        </a>
+                    </li>
+
+                    <li class="mr-3 my-2 md:my-0">
                         <a href="/dashboard/users" class="{{ ($active == 'users') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
                             <i class="fas fa-users fa-fw mr-3"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.users') }}</span>
                         </a>
