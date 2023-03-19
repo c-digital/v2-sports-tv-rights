@@ -31,7 +31,9 @@ $route->get('/europa/champions', [EuropaController::class, 'champions']);
 $route->get('/europa/europa', [EuropaController::class, 'europa']);
 
 $route->get('/json', [JsonController::class, 'index']);
-$route->post('/json', [JsonController::class, 'download']);
+$route->get('/json/score', [JsonController::class, 'score']);
+$route->get('/json/lineups', [JsonController::class, 'lineups']);
+$route->get('/json/standings', [JsonController::class, 'standings']);
 
 // Users
 $route->resource('/dashboard/users', UserController::class);
