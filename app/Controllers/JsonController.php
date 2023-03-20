@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use View;
+use DateTime;
 
 class JsonController extends Controller
 {
@@ -24,9 +25,36 @@ class JsonController extends Controller
         return view('json.index');
     }
 
-    /**
-     * Generate JSON file.
-     */
+    public function fixture()
+    {
+        $response = http()
+            ->withHeaders([
+                'x-rapidapi-host' => 'v3.football.api-sports.io',
+                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
+            ])
+            ->get('https://v3.football.api-sports.io/fixtures', [
+                'date' => '2023-03-18',
+                'league' => '140',
+                'season' => '2022'
+            ]);
+
+        $response = json($response->body())->response;
+
+        $data = [];
+        $i = 0;
+
+        foreach ($response as $item) {
+            $data[$i]['Nombre equipo local'] = $item->teams->home->name;
+            $data[$i]['Fecha'] = (new DateTime($item->fixture->date))->format('d-M');
+            $data[$i]['Hora'] = (new DateTime($item->fixture->date))->format('H:i');
+            $data[$i]['Nombre equipo visitante'] = $item->teams->away->name;
+
+            $i++;
+        }
+
+        return $data;
+    }
+
     public function score()
     {
         $response = http()
@@ -57,9 +85,6 @@ class JsonController extends Controller
         return $data;
     }
 
-    /**
-     * Generate JSON file.
-     */
     public function lineups()
     {
         $response = http()
@@ -125,6 +150,36 @@ class JsonController extends Controller
             $data['Posicion'][$i]['Nombre del equipo'] = $response[0]->league->standings[0][$i]->team->name;
             $data['Posicion'][$i]['Partidos disputados'] = $response[0]->league->standings[0][$i]->all->played;
             $data['Posicion'][$i]['Puntos'] = $response[0]->league->standings[0][$i]->points;
+        }
+
+        return $data;
+    }
+
+    public function stats()
+    {
+        $response = http()
+            ->withHeaders([
+                'x-rapidapi-host' => 'v3.football.api-sports.io',
+                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
+            ])
+            ->get('https://v3.football.api-sports.io/fixtures/statistics', [
+                'fixture' => get('fixture')
+            ]);
+
+        $response = json($response->body())->response;
+
+        $data = [];
+
+        foreach ($response as $item) {
+            $data[$item->team->name]['Corners'] = $item->statistics[7]->value;
+            $data[$item->team->name]['Remates totales'] = $item->statistics[2]->value;
+            $data[$item->team->name]['Remates al arco'] = $item->statistics[4]->value;
+            $data[$item->team->name]['Faltas'] = $item->statistics[6]->value;
+            $data[$item->team->name]['Offside'] = $item->statistics[8]->value;
+            $data[$item->team->name]['Posesion'] = $item->statistics[9]->value;
+            $data[$item->team->name]['Amarillas'] = $item->statistics[10]->value;
+            $data[$item->team->name]['Expulsados'] = $item->statistics[11]->value;
+            $data[$item->team->name]['Goles esperados'] = $item->statistics[16]->value;
         }
 
         return $data;
