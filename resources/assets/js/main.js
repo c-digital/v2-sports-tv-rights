@@ -6,6 +6,10 @@ function app () {
 
 		photo: '',
 
+        type: '',
+
+        moreFields: '',
+
 		search (input) {
             var input, filter, table, tr, td, i, j, visible;
             filter = input.value.toUpperCase();
@@ -71,6 +75,28 @@ function app () {
         removePhoto () {
             this.photo = '';
             document.getElementById('photo-preview').src = document.getElementById('photo-url').value;
+        },
+
+        showFields() {
+            this.moreFields = '';
+
+            if (this.type == 'lineups' || this.type == 'referees' || this.type == 'stats' || this.type == 'heatMap' || this.type == 'score') {
+                this.moreFields = `
+                    <div class="mt-4">
+                        <label for="fixture">Fixture</label>
+                        <input type="text" name="fixture" required>
+                    </div>
+                `;
+            }
+
+            if (this.type == 'fixture' || this.type == 'score') {
+                this.moreFields = `
+                    <div class="mt-4">
+                        <label for="date">Fecha</label>
+                        <input type="date" name="date" required>
+                    </div>
+                `;
+            }
         }
 	}
 }

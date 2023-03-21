@@ -3,8 +3,10 @@
 <head>
 <meta charset="{{ config('charset') }}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="author" content="Nisa Delgado">
+<meta name="author" content="Sports TV Rights">
 <meta name="theme-color" content="#212529">
+
+<meta name="htmx-config" content='{"timeout":"600000"}'>
 
 <title>{{ config('application_name') }}</title>
 
@@ -122,8 +124,8 @@
                     </li>
 
                     <li class="mr-2 my-2 md:my-0">
-                        <a href="/json" class="{{ ($active == 'json') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
-                            <i class="fas fa-download fa-fw mr-2"></i> <span class="pb-1 md:pb-0 text-sm">Descargar JSON</span>
+                        <a href="/export" class="{{ ($active == 'json') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
+                            <i class="fas fa-download fa-fw mr-2"></i> <span class="pb-1 md:pb-0 text-sm">Exportar datos</span>
                         </a>
                     </li>
 
@@ -152,6 +154,7 @@
     <script src="{{ node('flowbite/dist/flowbite.js') }}" defer></script>
     <script src="{{ node('alpinejs/dist/cdn.js') }}" defer></script>
     <script src="{{ node('sweetalert2/dist/sweetalert2.js') }}"></script>
+    <script src="{{ node('htmx.org/dist/htmx.js') }}"></script>
     <script src="{{ asset('js/main.js') }}"></script>
 
     <script type="module" src="https://widgets.api-sports.io/2.0.3/widgets.js"></script>

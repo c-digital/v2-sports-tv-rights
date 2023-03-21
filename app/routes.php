@@ -30,12 +30,8 @@ $route->get('/inglaterra/liga', [InglaterraController::class, 'liga']);
 $route->get('/europa/champions', [EuropaController::class, 'champions']);
 $route->get('/europa/europa', [EuropaController::class, 'europa']);
 
-$route->get('/json', [JsonController::class, 'index']);
-$route->get('/json/fixture', [JsonController::class, 'fixture']);
-$route->get('/json/score', [JsonController::class, 'score']);
-$route->get('/json/lineups', [JsonController::class, 'lineups']);
-$route->get('/json/standings', [JsonController::class, 'standings']);
-$route->get('/json/stats', [JsonController::class, 'stats']);
+$route->get('/export', [ExportController::class, 'index']);
+$route->post('/export', [ExportController::class, 'export']);
 
 // Users
 $route->resource('/dashboard/users', UserController::class);
