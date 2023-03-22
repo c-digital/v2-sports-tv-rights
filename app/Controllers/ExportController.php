@@ -7,6 +7,13 @@ use View;
 
 class ExportController extends Controller
 {
+    public $season;
+
+    public function __construct()
+    {
+        $this->season = get('league') == 344 || get('league') == 964 ? '2023' : '2022';
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,13 +21,43 @@ class ExportController extends Controller
      */
     public function index(): View
     {
-        return view('export.index');
+        $rounds = [];
+        $matches = [];
+
+        if (get('league')) {
+            $response = http()
+                ->withHeaders([
+                    'x-rapidapi-host' => 'v3.football.api-sports.io',
+                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
+                ])
+                ->get('https://v3.football.api-sports.io/fixtures/rounds', [
+                    'league' => request('league'),
+                    'season' => $this->season
+                ]);
+
+            $rounds = json($response->body())->response;
+        }
+
+        if (get('round')) {
+            $response = http()
+                ->withHeaders([
+                    'x-rapidapi-host' => 'v3.football.api-sports.io',
+                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
+                ])
+                ->get('https://v3.football.api-sports.io/fixtures', [
+                    'league' => request('league'),
+                    'season' => $this->season,
+                    'round' => get('round')
+                ]);
+
+            $matches = json($response->body())->response;
+        }
+
+        return view('export.index', compact('rounds', 'matches'));
     }
 
     public function export()
     {
-        $season = request('league') == 344 || request('league') == 964 ? '2023' : '2022';
-
         $data = [];
         $i = 0;
         $class = '';
@@ -36,7 +73,7 @@ class ExportController extends Controller
                     ])
                     ->get('https://v3.football.api-sports.io/standings', [
                         'league' => request('league'),
-                        'season' => $season
+                        'season' => $this->season
                     ]);
 
                 $response = json($response->body())->response;
@@ -58,9 +95,9 @@ class ExportController extends Controller
                         'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
                     ])
                     ->get('https://v3.football.api-sports.io/fixtures', [
-                        'date' => request('date'),
+                        'round' => request('round'),
                         'league' => request('league'),
-                        'season' => $season
+                        'season' => $this->season
                     ]);
 
                 $response = json($response->body())->response;
@@ -162,7 +199,7 @@ class ExportController extends Controller
                         'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
                     ])
                     ->get('https://v3.football.api-sports.io/fixtures', [
-                        'date' => request('date'),
+                        'round' => request('round'),
                         'league' => request('league'),
                         'season' => $season
                     ]);
@@ -185,6 +222,11 @@ class ExportController extends Controller
 
         excel($filename, new $class($data));
 
-        return redirect('/export?filename=' . $filename);
+        $request = request();
+        $request['copy'] = 1;
+
+        $queryString = http_build_query($request);
+
+        return redirect('/export?' . $queryString);
     }
 }

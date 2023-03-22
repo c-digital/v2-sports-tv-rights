@@ -97,6 +97,30 @@ function app () {
                     </div>
                 `;
             }
+        },
+
+        reloadWithLeague() {
+            league = document.getElementById('league').value;
+            url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+            if (league != '') {
+                window.location.href = url  + '?league=' + league;
+            }
+        },
+
+        reloadWithRound() {
+            round = document.getElementById('round').value;
+            league = document.getElementById('league').value;
+            url = window.location.protocol + '//' + window.location.host + window.location.pathname
+
+            if (round != '') {
+                window.location.href = url + '?league=' + league + '&round=' + round;
+            }
+        },
+
+        copyToClipboard() {
+            link = document.getElementById('link').value;
+            navigator.clipboard.writeText(link);
         }
 	}
 }
