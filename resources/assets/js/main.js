@@ -101,26 +101,64 @@ function app () {
 
         reloadWithLeague() {
             league = document.getElementById('league').value;
+            type = document.getElementById('type').value;
+
             url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
-            if (league != '') {
+            if (league != '' && type != 'standings') {
                 window.location.href = url  + '?league=' + league;
             }
         },
 
-        reloadWithRound() {
-            round = document.getElementById('round').value;
+        reloadWithType() {
             league = document.getElementById('league').value;
-            url = window.location.protocol + '//' + window.location.host + window.location.pathname
+            type = document.getElementById('type').value;
 
-            if (round != '') {
-                window.location.href = url + '?league=' + league + '&round=' + round;
+            url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+            if (type == 'standings') {
+                if (document.getElementById('round-container')) {
+                    document.getElementById('round-container').style.display = 'none';
+                }
+
+                if (document.getElementById('match-container')) {
+                    document.getElementById('match-container').style.display = 'none';
+                }
+            }
+
+            if (type != '' && type != 'standings') {
+                window.location.href = url  + '?type=' + type + '&league=' + league;
+            }
+        },
+
+        reloadWithRound() {
+            league = document.getElementById('league').value;
+            type = document.getElementById('type').value;
+            round = document.getElementById('round').value;
+            type = document.getElementById('type').value;
+
+            url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+            if (type == 'standings') {
+                if (document.getElementById('match-container')) {
+                    document.getElementById('match-container').style.display = 'none';
+                }
+            }
+
+            if (round != '' && type != 'fixture') {
+                window.location.href = url  + '?type=' + type + '&league=' + league + '&round=' + round;
             }
         },
 
         copyToClipboard() {
             link = document.getElementById('link').value;
             navigator.clipboard.writeText(link);
+
+            Swal.fire({
+                title: 'Enlace copiado',
+                icon: 'success',
+                confirmButtonColor: 'black',
+            })
         }
 	}
 }

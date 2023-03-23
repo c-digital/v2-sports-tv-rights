@@ -56,6 +56,7 @@ class UserController extends Controller
             'name' => request('name'),
             'email' => request('email'),
             'password' => encrypt(request('password')),
+            'role' => request('role'),
             'photo' => $file->filename,
         ]);
 
@@ -91,6 +92,7 @@ class UserController extends Controller
         $user->update([
             'name' => request('name'),
             'email' => request('email'),
+            'role' => request('role'),
         ]);
 
         if (request('password')) {

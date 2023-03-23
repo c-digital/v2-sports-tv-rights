@@ -21,8 +21,21 @@
 	        		</select>
 		        </div>
 
+		        <div class="mt-4">
+		        	<label class="inline-block w-32" for="type">Tipo</label>
+		        	<select @change="reloadWithType()" id="type" name="type" required>
+		        		<option {{ get('type') == 'stadings' ? 'selected' : '' }} value="standings">Tabla de posiciones</option>
+		        		<option {{ get('type') == 'fixture' ? 'selected' : '' }} value="fixture">Fixture</option>
+		        		<option {{ get('type') == 'lineups' ? 'selected' : '' }} value="lineups">Alineaciones</option>
+		        		<option {{ get('type') == 'referees' ? 'selected' : '' }} value="referees">Árbitros</option>
+		        		<option {{ get('type') == 'stats' ? 'selected' : '' }} value="stats">Estadísticas</option>
+		        		<option {{ get('type') == 'heatMap' ? 'selected' : '' }} value="heatMap">Mapa de calor</option>
+		        		<option {{ get('type') == 'score' ? 'selected' : '' }} value="score">Score</option>
+		        	</select>
+		        </div>
+
 		        @if(! empty($rounds))
-		        	<div class="mt-6">
+		        	<div class="mt-6" id="round-container">
 			        	<label class="inline-block w-32" for="round">Fecha</label>
 			        	<select @change="reloadWithRound()" name="round" id="round" required>
 		        			<option value=""></option>
@@ -33,10 +46,10 @@
 			        </div>
 		        @endif
 
-		        @if(! empty($matches))
-		        	<div class="mt-6">
+		        @if(! empty($matches) && get('type') != 'fixture')
+		        	<div class="mt-6" id="match-container">
 			        	<label class="inline-block w-32" for="match">Partido</label>
-			        	<select name="fixture" required>
+			        	<select name="fixture" id="match" required>
 		        			<option value=""></option>
 		        			@foreach($matches as $match)
 		        				<option {{ get('fixture') == $match->fixture->id ? 'selected' : '' }} value="{{ $match->fixture->id }}">{{ $match->teams->home->name . ' vs ' . $match->teams->away->name }}</option>
@@ -44,19 +57,6 @@
 		        		</select>
 			        </div>
 		        @endif
-
-		        <div class="mt-4">
-		        	<label class="inline-block w-32" for="type">Tipo</label>
-		        	<select name="type" required>
-		        		<option value="standings">Tabla de posiciones</option>
-		        		<option value="fixture">Fixture</option>
-		        		<option value="lineups">Alineaciones</option>
-		        		<option value="referees">Árbitros</option>
-		        		<option value="stats">Estadísticas</option>
-		        		<option value="heatMap">Mapa de calor</option>
-		        		<option value="score">Score</option>
-		        	</select>
-		        </div>
 
 		        <div class="mt-4 mb-6">
 		        	<button type="submit" class="text-center items-center p-3 appearance-none bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-black active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-300 disabled:opacity-25 transition">

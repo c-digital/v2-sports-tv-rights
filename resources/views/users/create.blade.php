@@ -43,6 +43,15 @@
                         <x-label for="email" text="{{ lang('users.email') }}"/>
                         <x-input name="email" value="{{ old('email') }}" required type="email"/>
                     </div>
+
+                    <div class="mt-5">
+                        <x-label for="role" text="{{ 'Rol' }}"/>
+                        <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" name="role">
+                            <option value=""></option>
+                            <option value="Administrador">Administrador</option>
+                            <option value="Usuario">Usuario</option>
+                        </select>
+                    </div>
                 </div>
             </div>
 

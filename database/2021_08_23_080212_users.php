@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
+            $table->string('role');
             $table->string('oauth')->nullable();
             $table->string('hash')->nullable()->unique();
             $table->string('two_fa')->nullable();
