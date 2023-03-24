@@ -7,7 +7,7 @@ return [
 
     // Region.
     'language' => 'es',
-    'timezone' => 'America/La_Paz',
+    'timezone' => 'UTC',
     'charset' => 'utf-8',
 
     // Environment.

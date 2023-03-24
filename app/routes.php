@@ -44,7 +44,10 @@ $route->resource('/dashboard/users', UserController::class);
 
 $route->get('/test', function () {
 
-	$currentMillis = time();
+	$currentMillis = floor(microtime(true) * 1000);
+	$currentMillis = (string) $currentMillis;
+	$currentMillis = $currentMillis . '000';
+
 	$outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
 	$secretKey = '5xcguj1nyzgd1aufvrjznfxa9';
 
@@ -52,8 +55,11 @@ $route->get('/test', function () {
 	$hash = hash('sha512', $string);
 
 	$response = http()
-		->withHeaders(['Authorization' => "Basic $hash", 'Timestamp' => $currentMillis])
-		->asForm()
+		->withHeaders([
+			'Content-Type' => 'application/x-www-form-urlencoded',
+			'Authorization' => "Basic $hash",
+			'Timestamp' => $currentMillis
+		])
         ->post("https://oauth.performgroup.com/oauth/token/$outletKey?_fmt=json&_rt=b", [
         	'grant_type' => 'client_credentials',
         	'scope' => 'b2b-feeds-auth'

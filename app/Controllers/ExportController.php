@@ -14,6 +14,12 @@ class ExportController extends Controller
      */
     public function index(): View
     {
+        $this->middleware('Auth');
+        
+        if (auth()->role != 'admin') {
+            return abort(401);
+        }
+        
         $rounds = [];
         $matches = [];
 

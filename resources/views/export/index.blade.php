@@ -1,4 +1,4 @@
-<x-template-dashboard active="json">
+<x-template-dashboard active="export">
 	<div class="w-full p-7">
         <h1 class="text-3xl mb-4">{{ 'Exportar datos' }}</h1>
 
