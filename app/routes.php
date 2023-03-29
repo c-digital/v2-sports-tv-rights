@@ -36,7 +36,7 @@ $route->post('/export', [ExportController::class, 'export']);
 $route->get('/export/standings/{league}', [ExportController::class, 'standings']);
 $route->get('/export/fixture/{league}/{round}', [ExportController::class, 'fixture']);
 $route->get('/export/lineups/{fixture}', [ExportController::class, 'lineups']);
-$route->get('/export/stats/{fixture}', [ExportController::class, 'stats']);
+$route->get('/export/stats/{fixture?}', [ExportController::class, 'stats']);
 $route->get('/export/score/{fixture}', [ExportController::class, 'score']);
 
 // Users
@@ -44,9 +44,7 @@ $route->resource('/dashboard/users', UserController::class);
 
 $route->get('/test', function () {
 
-	$currentMillis = floor(microtime(true) * 1000);
-	$currentMillis = (string) $currentMillis;
-	$currentMillis = $currentMillis . '000';
+	$currentMillis = time() * 1000;
 
 	$outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
 	$secretKey = '5xcguj1nyzgd1aufvrjznfxa9';

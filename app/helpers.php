@@ -19,24 +19,28 @@ function linkToCopy()
 
 	switch (get('type')) {
 		case 'fixture':
-			$link = 'https://api.sportstvrights.com/export/fixture/' . request('league') . '/' . request('round');
+			$link = 'https://api-v2.sportstvrights.com/export/fixture/' . request('league') . '/' . request('round');
 			break;
 
 		case 'standings':
-			$link = 'https://api.sportstvrights.com/export/standings/' . request('league');
+			$link = 'https://api-v2.sportstvrights.com/export/standings/' . request('league');
 			break;
 
 		case 'lineups':
-				$link = 'https://api.sportstvrights.com/export/lineups/' . request('fixture');
+				$link = 'https://api-v2.sportstvrights.com/export/lineups/' . request('fixture');
 			break;
 
 		case 'stats':
-				$link = 'https://api.sportstvrights.com/export/stats/' . request('fixture');
+				$link = 'https://api-v2.sportstvrights.com/export/stats/' . request('fixture');
 			break;
 
 		case 'score':
-				$link = 'https://api.sportstvrights.com/export/score/' . request('fixture');
+				$link = 'https://api-v2.sportstvrights.com/export/score/' . request('fixture');
 			break;
+	}
+
+	if (get('bolivia')) {
+		$link = $link . '?bolivia=1';
 	}
 
 	return $link;

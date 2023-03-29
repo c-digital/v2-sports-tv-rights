@@ -57,14 +57,14 @@
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['reds'] }}</td>
+    	<td class="right">{{ $data[$local]['reds'] ?? 0 }}</td>
     	<td class="center">Rojas</td>
-    	<td>{{ $data[$away]['reds'] }}</td>
+    	<td>{{ $data[$away]['reds'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['expected_goals'] }}</td>
+    	<td class="right">{{ $data[$local]['expected_goals'] ?? 0 }}</td>
     	<td class="center">Goles esperados</td>
-    	<td>{{ $data[$away]['expected_goals'] }}</td>
+    	<td>{{ $data[$away]['expected_goals'] ?? 0 }}</td>
     </tr>
 </table>

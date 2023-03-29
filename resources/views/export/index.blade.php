@@ -46,16 +46,28 @@
 			        </div>
 		        @endif
 
-		        @if(! empty($matches) && get('type') != 'fixture')
-		        	<div class="mt-6" id="match-container">
-			        	<label class="inline-block w-32" for="match">Partido</label>
-			        	<select name="fixture" id="match" required>
-		        			<option value=""></option>
-		        			@foreach($matches as $match)
-		        				<option {{ get('fixture') == $match->fixture->id ? 'selected' : '' }} value="{{ $match->fixture->id }}">{{ $match->teams->home->name . ' vs ' . $match->teams->away->name }}</option>
-		        			@endforeach
-		        		</select>
-			        </div>
+		        @if(! empty($matches) && get('type') != 'fixture' && get('type') != 'standings')
+		        	@if(get('league') == 344)
+			        	<div class="mt-6" id="match-container">
+				        	<label class="inline-block w-32" for="match">Partido</label>
+				        	<select name="fixture" id="match" required>
+			        			<option value=""></option>
+			        			@foreach($matches as $match)
+			        				<option {{ get('fixture') == $match->matchInfo->id ? 'selected' : '' }} value="{{ $match->matchInfo->id }}">{{ $match->matchInfo->description }}</option>
+			        			@endforeach
+			        		</select>
+				        </div>
+			        @else
+			        	<div class="mt-6" id="match-container">
+				        	<label class="inline-block w-32" for="match">Partido</label>
+				        	<select name="fixture" id="match" required>
+			        			<option value=""></option>
+			        			@foreach($matches as $match)
+			        				<option {{ get('fixture') == $match->fixture->id ? 'selected' : '' }} value="{{ $match->fixture->id }}">{{ $match->teams->home->name . ' vs ' . $match->teams->away->name }}</option>
+			        			@endforeach
+			        		</select>
+				        </div>
+			        @endif
 		        @endif
 
 		        <div class="mt-4 mb-6">
