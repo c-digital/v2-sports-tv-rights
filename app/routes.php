@@ -44,14 +44,6 @@ $route->resource('/dashboard/users', UserController::class);
 
 $route->get('/test', function () {
 
-	$currentMillis = time() * 1000;
-
-	$outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
-	$secretKey = '5xcguj1nyzgd1aufvrjznfxa9';
-
-	$string = $outletKey . $currentMillis . $secretKey;
-	$hash = hash('sha512', $string);
-
 	$response = http()
 		->withHeaders([
 			'Content-Type' => 'application/x-www-form-urlencoded',

@@ -9,7 +9,7 @@ class ExportController extends Controller
 {
     public function __construct()
     {
-        $this->token = 'dbIo6Tk39KUoa_xlv3hNNNHXXzbJB6Ow0rUoI0YIkQWkpxce3nXx_oILBwcMSgFDFHrMeNzv3ojxunlu-SSzX72ppF14nSYeXbSWcjJN9-vANg_f65NFr5J70ukFiW5dwjl0xEngnpufGcfDIvO_7C9o2AmpHKuTJSEMdsXPYcChLhRDCK0FIQRbmReMNRMjv7aYpMXtzUD7nSBMgtVYCMSzynE6nqzQp84607QiyEFvX36SV29J8kBWqknimbxYWEsVVi-27xvUwJlG4eEj2vpBSsr3vvvETKAEhAdhDbhTuL7aFyYy0mzvrPLeBe-ZA3TWJQiVI8gaU9HF37b4VA';
+        $this->token = 'VvrLWUD_kiM5VEA_nDCn5i1AerPyXPJ8eYFCKwspd8aCUpeq1xBsSe61qB4G5B9mpBQt4ziRnWGFR2TE8126aYLdHG5Q0sQvigK2r-KKIXRXq8k1ZIGYPFtQNlXaG-MEM_18Du0GHGPv2UeFh29eNF8ciH-dH1T-YjiCU6qxBAHwO2OAriGZkH_fameiwHpfjkwlfyrIRYqJmGN_m3C8k4xinUYAQLlBojcocU7_ddkn24NRiYJGM1Gf7BkdizVYpqSb4c8YiksDIUKwZA0E2srnJ4MuJHBseRRMxNjLYjeRaVPNUKg0nr3XcP2Lm6ynnT8l77s-uW2DoCU1fo03HQ';
 
         $this->outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
     }
@@ -143,9 +143,17 @@ class ExportController extends Controller
             $data['local']['team'] = $response->matchInfo->contestant[0]->shortName;
             $data['local']['formation'] = $response->liveData->lineUp[0]->formationUsed;
 
-            for ($i = 0; $i <= 10; $i++) { 
-                $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->matchName;
+            $j = 0;
+
+            for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
+                if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
+                    $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                    $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->matchName;
+                } else {
+                    $data['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                    $data['local']['substitutes'][$j]['name'] = $response->liveData->lineUp[0]->player[$i]->matchName;
+                    $j++;
+                }
             }
 
             $data['local']['coach'] = $response->liveData->lineUp[0]->teamOfficial->firstName . ' ' . $response->liveData->lineUp[0]->teamOfficial->lastName;
@@ -153,16 +161,23 @@ class ExportController extends Controller
             $data['away']['team'] = $response->matchInfo->contestant[1]->shortName;
             $data['away']['formation'] = $response->liveData->lineUp[1]->formationUsed;
 
-            for ($i = 0; $i <= 10; $i++) { 
-                $data['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->matchName;
-            }
+            $j = 0;
 
-            return $response->liveData;
+            for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
+                if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
+                    $data['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
+                    $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->matchName;
+                } else {
+                    $data['away']['substitutes'][$j]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
+                    $data['away']['substitutes'][$j]['name'] = $response->liveData->lineUp[1]->player[$i]->matchName;
+                    $j++;
+                }
+            }
 
             $data['away']['coach'] = $response->liveData->lineUp[1]->teamOfficial->firstName . ' ' . $response->liveData->lineUp[1]->teamOfficial->lastName;
 
-            return $data;
+            $array = [count($data['away']['substitutes']), count($data['local']['substitutes'])];
+            $max = max($array);
 
         } else {
             $response = http()
@@ -207,7 +222,7 @@ class ExportController extends Controller
             $data['away']['coach'] = $response[1]->coach->name;
 
             $array = [count($data['away']['substitutes']), count($data['local']['substitutes'])];
-            $max = max($array);            
+            $max = max($array);         
         }
 
 
@@ -249,6 +264,8 @@ class ExportController extends Controller
 
             $response = json($response->body())->liveData;
 
+            $data[$home]['contestantId'] = $response->lineUp[0]->contestantId;
+
             foreach ($response->lineUp[0]->stat as $stat) {
                 if ($stat->type == 'cornerTaken') {
                     $data[$home]['corners'] = $stat->value;
@@ -279,6 +296,8 @@ class ExportController extends Controller
                 }                
             }
 
+            $data[$away]['contestantId'] = $response->lineUp[1]->contestantId;
+
             foreach ($response->lineUp[1]->stat as $stat) {
                 if ($stat->type == 'cornerTaken') {
                     $data[$away]['corners'] = $stat->value;
@@ -307,6 +326,37 @@ class ExportController extends Controller
                 if ($stat->type == 'totalYellowCard') {
                     $data[$away]['yellows'] = $stat->value;
                 }                
+            }
+
+            $data[$home]['reds'] = 0;
+            $data[$away]['reds'] = 0;
+
+            foreach ($response->card as $card) {
+                if ($card->type == 'RC' && $card->contestantId == $data[$home]['contestantId']) {
+                    $data[$home]['reds'] = $data[$home]['reds'] + 1;
+                }
+
+                if ($card->type == 'RC' && $card->contestantId == $data[$away]['contestantId']) {
+                    $data[$away]['reds'] = $data[$away]['reds'] + 1;
+                }
+            }
+
+            $response = http()
+                ->withToken($this->token)
+                ->get('https://api.performfeeds.com/soccerdata/matchexpectedgoals/' . $this->outletKey . '/' . $fixture . '?_rt=b&_fmt=json');
+
+            $response = json($response->body())->liveData;
+
+            foreach ($response->lineUp[0]->stat as $stat) {
+                if ($stat->type == 'expectedGoals') {
+                    $data[$home]['expected_goals'] = $stat->value;
+                }              
+            }
+
+            foreach ($response->lineUp[1]->stat as $stat) {
+                if ($stat->type == 'expectedGoals') {
+                    $data[$away]['expected_goals'] = $stat->value;
+                }              
             }
         }
 

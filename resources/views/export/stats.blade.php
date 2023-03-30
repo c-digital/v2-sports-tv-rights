@@ -33,6 +33,12 @@
     </tr>
 
     <tr>
+    	<td class="right">{{ $data[$local]['shots_on_goal'] }}</td>
+    	<td class="center">Tiros a puerta</td>
+    	<td>{{ $data[$away]['shots_on_goal'] }}</td>
+    </tr>
+
+    <tr>
     	<td class="right">{{ $data[$local]['fouls'] }}</td>
     	<td class="center">Faltas</td>
     	<td>{{ $data[$away]['fouls'] }}</td>
