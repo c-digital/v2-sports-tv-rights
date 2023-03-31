@@ -9,7 +9,7 @@ class ExportController extends Controller
 {
     public function __construct()
     {
-        $this->token = 'VvrLWUD_kiM5VEA_nDCn5i1AerPyXPJ8eYFCKwspd8aCUpeq1xBsSe61qB4G5B9mpBQt4ziRnWGFR2TE8126aYLdHG5Q0sQvigK2r-KKIXRXq8k1ZIGYPFtQNlXaG-MEM_18Du0GHGPv2UeFh29eNF8ciH-dH1T-YjiCU6qxBAHwO2OAriGZkH_fameiwHpfjkwlfyrIRYqJmGN_m3C8k4xinUYAQLlBojcocU7_ddkn24NRiYJGM1Gf7BkdizVYpqSb4c8YiksDIUKwZA0E2srnJ4MuJHBseRRMxNjLYjeRaVPNUKg0nr3XcP2Lm6ynnT8l77s-uW2DoCU1fo03HQ';
+        $this->token = 'HJOApdriZedFONjZdSVtUoM3CqZO10y4d8QK5doc2fIIVjGSdgTHJxVc_1Ha7y8OckrNX7r0DXx9qOvDDvOTbQNDFrHiRH1vQl-nAO80DnSx0DM25tIte79ezGfRmuR4fP4UaBnFwUBrCECKyXzgkvF773Jsy57H-y3yvNqhj_bYq6fWAcWPIx-Aaon4ntAkfU6XDglRBIf1ythVVy9iEo2o2Dy2aayIQXpgBITnqMVUq9M47Lok12qsWjxOQok3d6N6EIVwhSU1FNlqU5BPmJQXxCNH3yZMN8ko6VM6ub3XXjSg0iryS4AOV58g-8ruibgSXdRWZW8fXY7mJJXmZg';
 
         $this->outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
     }
@@ -97,6 +97,33 @@ class ExportController extends Controller
             $data[$i]['points'] = $response[0]->league->standings[0][$i]->points;
         }
 
+        if (get('bolivia')) {
+            if ($league == '344') {
+                $tournamentCalendarId = 'd9kukruep5g7fthaknhbo2k2c';
+            }
+
+            if ($league == '964') {
+                $tournamentCalendarId = 'acjvtl7xxvcbcz107c8lieqz8';
+            }
+
+            $response = http()
+                ->withToken($this->token)
+                ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
+
+            $response = json($response->body())->stage[0]->division[0]->ranking;
+
+            $i = 0;
+
+            foreach ($response as $item) {
+                $data[$i]['position'] = $item->rank;
+                $data[$i]['team'] = $item->contestantClubName;
+                $data[$i]['played'] = $item->matchesPlayed;
+                $data[$i]['points'] = $item->points;
+
+                $i++;
+            }
+        }
+
         return view('export.standings', compact('data'));
     }
 
@@ -122,11 +149,14 @@ class ExportController extends Controller
         foreach ($response as $item) {
             $data[$i]['local'] = $item->teams->home->name;
             $data[$i]['date'] = (new DateTime($item->fixture->date))->format('d-M');
+            $data[$i]['datetime'] = (new DateTime($item->fixture->date))->format('Y-m-d H:i:s');
             $data[$i]['time'] = (new DateTime($item->fixture->date))->format('H:i');
             $data[$i]['away'] = $item->teams->away->name;
 
             $i++;
         }
+
+        array_multisort(array_column($data, 'datetime'), SORT_ASC, $data);
 
         return view('export.fixture', compact('data'));
     }
@@ -372,47 +402,83 @@ class ExportController extends Controller
 
     public function score($fixture)
     {
-        $response = http()
-            ->withHeaders([
-                'x-rapidapi-host' => 'v3.football.api-sports.io',
-                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-            ])
-            ->get('https://v3.football.api-sports.io/fixtures/lineups', [
-                'fixture' => $fixture
-            ]);
+        if (get('bolivia')) {
+            $response = http()
+                ->withToken($this->token)
+                ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
 
-        $response = json($response->body())->response;
+            $response = json($response->body());
 
-        $data['local']['team_id'] = $response[0]->team->id;
-        $data['local']['team'] = $response[0]->team->name;
-        $data['local']['logo'] = $response[0]->team->logo;
+            $data['local']['team_id'] = $response->matchInfo->contestant[0]->id;
+            $data['local']['team'] = $response->matchInfo->contestant[0]->name;
+            $data['local']['logo'] = '';
 
-        $data['away']['team_id'] = $response[1]->team->id;
-        $data['away']['team'] = $response[1]->team->name;
-        $data['away']['logo'] = $response[1]->team->logo;
+            $data['away']['team_id'] = $response->matchInfo->contestant[1]->id;
+            $data['away']['team'] = $response->matchInfo->contestant[1]->name;
+            $data['away']['logo'] = '';
 
-        $response = http()
-            ->withHeaders([
-                'x-rapidapi-host' => 'v3.football.api-sports.io',
-                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-            ])
-            ->get('https://v3.football.api-sports.io/fixtures/events', [
-                'fixture' => $fixture,
-                'type' => 'Goal'
-            ]);
+            $i = 0;
 
-        $response = json($response->body())->response;
+            foreach ($response->liveData->goal as $goal) {
+                $data['goals'][$i]['detail'] = '';
+                $data['goals'][$i]['player'] = $goal->scorerName;
+                $data['goals'][$i]['time'] = $goal->timeMin;
 
-        $i = 0;
+                if ($goal->contestantId == $response->matchInfo->contestant[0]->id) {
+                    $data['goals'][$i]['team'] = $response->matchInfo->contestant[0]->name;
+                }
 
-        foreach ($response as $item) {
-            $data['goals'][$i]['detail'] = $item->detail;
-            $data['goals'][$i]['team'] = $item->team->name;
-            $data['goals'][$i]['player'] = $item->player->name;
-            $data['goals'][$i]['time'] = $item->time->elapsed;
+                if ($goal->contestantId == $response->matchInfo->contestant[1]->id) {
+                    $data['goals'][$i]['team'] = $response->matchInfo->contestant[1]->name;
+                }
 
-            $i++;
+                $i++;
+            }
+
+        } else {
+            $response = http()
+                ->withHeaders([
+                    'x-rapidapi-host' => 'v3.football.api-sports.io',
+                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
+                ])
+                ->get('https://v3.football.api-sports.io/fixtures/lineups', [
+                    'fixture' => $fixture
+                ]);
+
+            $response = json($response->body())->response;
+
+            $data['local']['team_id'] = $response[0]->team->id;
+            $data['local']['team'] = $response[0]->team->name;
+            $data['local']['logo'] = $response[0]->team->logo;
+
+            $data['away']['team_id'] = $response[1]->team->id;
+            $data['away']['team'] = $response[1]->team->name;
+            $data['away']['logo'] = $response[1]->team->logo;
+
+            $response = http()
+                ->withHeaders([
+                    'x-rapidapi-host' => 'v3.football.api-sports.io',
+                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
+                ])
+                ->get('https://v3.football.api-sports.io/fixtures/events', [
+                    'fixture' => $fixture,
+                    'type' => 'Goal'
+                ]);
+
+            $response = json($response->body())->response;
+
+            $i = 0;
+
+            foreach ($response as $item) {
+                $data['goals'][$i]['detail'] = $item->detail;
+                $data['goals'][$i]['team'] = $item->team->name;
+                $data['goals'][$i]['player'] = $item->player->name;
+                $data['goals'][$i]['time'] = $item->time->elapsed;
+
+                $i++;
+            }            
         }
+
 
         return view('export.score', compact('data'));
     }
@@ -426,5 +492,16 @@ class ExportController extends Controller
         $queryString = http_build_query($request);
 
         return redirect('/export?' . $queryString);
+    }
+
+    public function referees($fixture)
+    {
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+
+        $referees = json($response->body())->liveData->matchDetailsExtra->matchOfficial;
+
+        return view('export.referees', compact('referees'));
     }
 }

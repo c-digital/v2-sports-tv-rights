@@ -17,7 +17,9 @@
 <table>
 	<tr>
 		<td>
-			<img src="{{ $data['local']['logo'] }}" alt="{{ $data['local']['team'] }}">
+			@if($data['local']['logo'])
+				<img src="{{ $data['local']['logo'] }}" alt="{{ $data['local']['team'] }}">
+			@endif
 		</td>
 
 		<td>{{ $data['local']['team'] }}</td>
@@ -29,7 +31,9 @@
 		<td>{{ $data['away']['team'] }}</td>
 
 		<td>
-			<img src="{{ $data['away']['logo'] }}" alt="{{ $data['away']['team'] }}">
+			@if($data['away']['logo'])
+				<img src="{{ $data['away']['logo'] }}" alt="{{ $data['away']['team'] }}">
+			@endif
 		</td>
 	</tr>
 

@@ -1,5 +1,30 @@
 <?php
 
+function type($type)
+{
+	return $type;
+
+	switch ($type) {
+		case 'Main':
+			$type = 'Principal';
+			break;
+
+		case 'Lineman 1':
+			$type = 'Línea 1';
+			break;
+
+		case 'Lineman 2':
+			$type = 'Línea 2';
+			break;
+
+		case 'Fourth official':
+			$type = 'Cuarto arbitro';
+			break;
+	}
+
+	return $type;
+}
+
 function goal($goals, $team)
 {
 	$i = 0;
@@ -17,25 +42,31 @@ function linkToCopy()
 {
 	$link = '';
 
+	$url = server('protocol') . '://' . server('host');
+
 	switch (get('type')) {
 		case 'fixture':
-			$link = 'https://api-v2.sportstvrights.com/export/fixture/' . request('league') . '/' . request('round');
+			$link = $url . '/export/fixture/' . request('league') . '/' . request('round');
 			break;
 
 		case 'standings':
-			$link = 'https://api-v2.sportstvrights.com/export/standings/' . request('league');
+			$link = $url . '/export/standings/' . request('league');
 			break;
 
 		case 'lineups':
-				$link = 'https://api-v2.sportstvrights.com/export/lineups/' . request('fixture');
+				$link = $url . '/export/lineups/' . request('fixture');
 			break;
 
 		case 'stats':
-				$link = 'https://api-v2.sportstvrights.com/export/stats/' . request('fixture');
+				$link = $url . '/export/stats/' . request('fixture');
 			break;
 
 		case 'score':
-				$link = 'https://api-v2.sportstvrights.com/export/score/' . request('fixture');
+				$link = $url . '/export/score/' . request('fixture');
+			break;
+
+		case 'referees':
+				$link = $url . '/export/referees/' . request('fixture');
 			break;
 	}
 

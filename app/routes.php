@@ -22,14 +22,6 @@ $route->get('/dashboard', [DashboardController::class, 'index']);
 $route->get('/bolivia/liga', [BoliviaController::class, 'liga']);
 $route->get('/bolivia/copa', [BoliviaController::class, 'copa']);
 
-$route->get('/españa/liga', [EspañaController::class, 'liga']);
-$route->get('/españa/copa', [EspañaController::class, 'copa']);
-
-$route->get('/inglaterra/liga', [InglaterraController::class, 'liga']);
-
-$route->get('/europa/champions', [EuropaController::class, 'champions']);
-$route->get('/europa/europa', [EuropaController::class, 'europa']);
-
 $route->get('/export', [ExportController::class, 'index']);
 $route->post('/export', [ExportController::class, 'export']);
 
@@ -38,9 +30,18 @@ $route->get('/export/fixture/{league}/{round}', [ExportController::class, 'fixtu
 $route->get('/export/lineups/{fixture}', [ExportController::class, 'lineups']);
 $route->get('/export/stats/{fixture?}', [ExportController::class, 'stats']);
 $route->get('/export/score/{fixture}', [ExportController::class, 'score']);
+$route->get('/export/referees/{fixture}', [ExportController::class, 'referees']);
 
 // Users
 $route->resource('/dashboard/users', UserController::class);
+
+$route->get('/calendar', function () {
+	$response = http()
+		->withToken('UkifH-of9gN3TcRajcBiILq77kZ2ccRbIKLveOHnArRA9oP52qLXN3SkeYSxol4jzn4oxpQMU-utnM8pysFM3YfhpQa0Qi82Kq3CUkqyQSWpHhAQymhiq1y5dHkXomdtPD1vciRhs9U9PCET_z7z7iPyU1wBu3eTlxWbxahTsRF3444xT7wcKqzg-pldCvz2379InceFAdzKuUkFRwOTqrmoqH1fjPHXBDebma2-lKqfrnEE94Nb8F6_ucO-Ux2UkpDwONbK7aA1AsikblUPWeiRgBTHMLDgAmOyNgyJVqjmHamanODm483JCXqG_kAq9XNu0IQxq0sng77_ZxWAFA')
+		->get('https://api.performfeeds.com/soccerdata/tournamentcalendar/1kfk2u28ef3ut1nm5o9tozdg65/active/authorized?_fmt=json&_rt=b');
+
+	return $response;
+});
 
 $route->get('/test', function () {
 
