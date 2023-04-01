@@ -45,6 +45,8 @@ $route->get('/calendar', function () {
 
 $route->get('/test', function () {
 
+	return date('Y-m-d H:i:s');
+
 	$response = http()
 		->withHeaders([
 			'Content-Type' => 'application/x-www-form-urlencoded',

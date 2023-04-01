@@ -152,6 +152,12 @@ class ExportController extends Controller
             $data[$i]['datetime'] = (new DateTime($item->fixture->date))->format('Y-m-d H:i:s');
             $data[$i]['time'] = (new DateTime($item->fixture->date))->format('H:i');
             $data[$i]['away'] = $item->teams->away->name;
+            
+            if ($item->fixture->status->short == 'FT') {
+                $result = $item->goals->home . '-' . $item->goals->away;
+
+                $data[$i]['result'] = $result;
+            }
 
             $i++;
         }

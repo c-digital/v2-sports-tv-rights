@@ -15,6 +15,7 @@
 		<th>Local</th>
 		<th>Fecha</th>
 		<th>Hora</th>
+		<th>Resultado</th>
 		<th>Visitante</th>
 	</tr>
 
@@ -23,6 +24,7 @@
 			<td>{{ $item['local'] }}</td>
 			<td>{{ $item['date'] }}</td>
 			<td>{{ $item['time'] }}</td>
+			<td>{{ $item['result'] ?? '' }}</td>
 			<td>{{ $item['away'] }}</td>
 		</tr>
 	@endforeach
