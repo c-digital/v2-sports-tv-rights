@@ -9,7 +9,7 @@ class ExportController extends Controller
 {
     public function __construct()
     {
-        $this->token = 'HJOApdriZedFONjZdSVtUoM3CqZO10y4d8QK5doc2fIIVjGSdgTHJxVc_1Ha7y8OckrNX7r0DXx9qOvDDvOTbQNDFrHiRH1vQl-nAO80DnSx0DM25tIte79ezGfRmuR4fP4UaBnFwUBrCECKyXzgkvF773Jsy57H-y3yvNqhj_bYq6fWAcWPIx-Aaon4ntAkfU6XDglRBIf1ythVVy9iEo2o2Dy2aayIQXpgBITnqMVUq9M47Lok12qsWjxOQok3d6N6EIVwhSU1FNlqU5BPmJQXxCNH3yZMN8ko6VM6ub3XXjSg0iryS4AOV58g-8ruibgSXdRWZW8fXY7mJJXmZg';
+        $this->token = token();
 
         $this->outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
     }
@@ -29,6 +29,7 @@ class ExportController extends Controller
         
         $rounds = [];
         $matches = [];
+        $players = [];
 
         $season = get('league') == 344 || get('league') == 964 ? '2023' : '2022';
 
@@ -71,7 +72,31 @@ class ExportController extends Controller
             }
         }
 
-        return view('export.index', compact('rounds', 'matches'));
+        if (get('type') == 'playerStats') {
+            $response = http()
+                ->withToken($this->token)
+                ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . get('fixture') . '?detailed=yes&_rt=b&_fmt=json');
+
+            $response = json($response->body());
+
+            $i = 0;
+
+            foreach ($response->liveData->lineUp[0]->player as $player) {
+                $players[$i]['id'] = $player->playerId;
+                $players[$i]['name'] = $player->matchName;
+
+                $i++;
+            }
+
+            foreach ($response->liveData->lineUp[1]->player as $player) {
+                $players[$i]['id'] = $player->playerId;
+                $players[$i]['name'] = $player->matchName;
+
+                $i++;
+            }
+        }
+
+        return view('export.index', compact('rounds', 'matches', 'players'));
     }
 
     public function standings($league)
@@ -493,7 +518,10 @@ class ExportController extends Controller
     {
         $request = request();
         $request['copy'] = 1;
-        $request['bolivia'] = 1;
+
+        if (request('league') == '344' || request('league') == '964') {
+            $request['bolivia'] = 1;
+        }
 
         $queryString = http_build_query($request);
 
@@ -509,5 +537,28 @@ class ExportController extends Controller
         $referees = json($response->body())->liveData->matchDetailsExtra->matchOfficial;
 
         return view('export.referees', compact('referees'));
+    }
+
+    public function playerStats($fixture, $player)
+    {
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+
+        $response = json($response->body());
+
+        foreach ($response->liveData->lineUp[0]->player as $item) {
+            if ($item->playerId == $player) {
+                $data = $item;
+            }
+        }
+
+        foreach ($response->liveData->lineUp[1]->player as $player) {
+            if ($item->playerId == $player) {
+                $data = $item;
+            }
+        }
+
+        return view('export.player-stats', compact('data'));
     }
 }

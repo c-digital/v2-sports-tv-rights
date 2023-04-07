@@ -135,7 +135,6 @@ function app () {
             league = document.getElementById('league').value;
             type = document.getElementById('type').value;
             round = document.getElementById('round').value;
-            type = document.getElementById('type').value;
 
             url = window.location.protocol + '//' + window.location.host + window.location.pathname;
 
@@ -147,6 +146,20 @@ function app () {
 
             if (round != '' && type != 'fixture') {
                 window.location.href = url  + '?type=' + type + '&league=' + league + '&round=' + round;
+            }
+        },
+
+        reloadWithMatch()
+        {
+            league = document.getElementById('league').value;
+            type = document.getElementById('type').value;
+            round = document.getElementById('round').value;
+            match = document.getElementById('match').value;
+
+            url = window.location.protocol + '//' + window.location.host + window.location.pathname;
+
+            if (type == 'playerStats') {
+                window.location.href = url  + '?type=' + type + '&league=' + league + '&round=' + round + '&fixture=' + match;
             }
         },
 

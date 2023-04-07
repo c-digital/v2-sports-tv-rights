@@ -1,5 +1,11 @@
 <?php
 
+function token()
+{
+	$token = file_get_contents('https://api-v2.sportstvrights.com/token.txt');
+	return $token;
+}
+
 function type($type)
 {
 	return $type;
@@ -67,6 +73,10 @@ function linkToCopy()
 
 		case 'referees':
 				$link = $url . '/export/referees/' . request('fixture');
+			break;
+
+		case 'playerStats':
+				$link = $url . '/export/playerStats/' . request('fixture') . '/' . request('player');
 			break;
 	}
 

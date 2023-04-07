@@ -15,9 +15,13 @@
 	        			<option {{ get('league') == 964 ? 'selected' : '' }} value="964">Copa Bolivia</option>
 	        			<option {{ get('league') == 140 ? 'selected' : '' }} value="140">Liga España</option>
 	        			<option {{ get('league') == 143 ? 'selected' : '' }} value="143">Copa del Rey</option>
-	        			<option {{ get('league') == 39 ? 'selected' : '' }} value="39">Liga Inglaterra</option>
+	        			<option {{ get('league') == 39 ? 'selected' : '' }} value="39">Premier League</option>
 	        			<option {{ get('league') == 2 ? 'selected' : '' }} value="2">Champions League</option>
 	        			<option {{ get('league') == 3 ? 'selected' : '' }} value="3">Europa League</option>
+	        			<option {{ get('league') == 15 ? 'selected' : '' }} value="15">Liga Italia</option>
+	        			<option {{ get('league') == 128 ? 'selected' : '' }} value="128">Liga Argentina</option>
+	        			<option {{ get('league') == 61 ? 'selected' : '' }} value="61">Liga Francia</option>
+	        			<option {{ get('league') == 78 ? 'selected' : '' }} value="78">Liga Alemania</option>
 	        		</select>
 		        </div>
 
@@ -29,6 +33,7 @@
 		        		<option {{ get('type') == 'lineups' ? 'selected' : '' }} value="lineups">Alineaciones</option>
 		        		<option {{ get('type') == 'referees' ? 'selected' : '' }} value="referees">Árbitros</option>
 		        		<option {{ get('type') == 'stats' ? 'selected' : '' }} value="stats">Estadísticas</option>
+		        		<option {{ get('type') == 'playerStats' ? 'selected' : '' }} value="playerStats">Estadísticas por jugador</option>
 		        		<option {{ get('type') == 'heatMap' ? 'selected' : '' }} value="heatMap">Mapa de calor</option>
 		        		<option {{ get('type') == 'score' ? 'selected' : '' }} value="score">Score</option>
 		        	</select>
@@ -48,7 +53,7 @@
 
 		        @if(! empty($matches) && get('type') != 'fixture' && get('type') != 'standings')
 		        	@if(get('league') == 344)
-			        	<div class="mt-6" id="match-container">
+			        	<div @change="reloadWithMatch()" class="mt-6" id="match-container">
 				        	<label class="inline-block w-32" for="match">Partido</label>
 				        	<select name="fixture" id="match" required>
 			        			<option value=""></option>
@@ -68,6 +73,19 @@
 			        		</select>
 				        </div>
 			        @endif
+		        @endif
+
+		        @if(get('fixture') && get('type') == 'playerStats')
+		        	<div class="mt-6" id="player-container">
+			        	<label class="inline-block w-32" for="player">Jugador</label>
+			        	<select name="player" id="player" required>
+		        			<option value=""></option>
+
+		        			@foreach($players as $player)
+		        				<option {{ get('player') == $player['id'] ? 'selected' : '' }} value="{{ $player['id'] }}">{{ $player['name'] }}</option>
+		        			@endforeach
+		        		</select>
+			        </div>
 		        @endif
 
 		        <div class="mt-4 mb-6">
