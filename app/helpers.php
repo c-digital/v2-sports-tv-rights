@@ -1,5 +1,18 @@
 <?php
 
+function statTrans($key)
+{
+	if (file_exists('resources/lang/es/stats.php')) {
+		$array = file_get_contents('resources/lang/es/stats.php');
+
+		if (in_array($key, $array)) {
+			return $array[$key];
+		}
+	}
+
+	return $key;
+}
+
 function token()
 {
 	$token = file_get_contents('https://api-v2.sportstvrights.com/token.txt');

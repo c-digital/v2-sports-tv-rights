@@ -21,7 +21,7 @@
 	@foreach($data->stat as $stat)
 		<tr>
 			<th class="left">{{ $stat->type }}</th>
-			<td>{{ $stat->value }}</td>
+			<td>{{ statTrans($stat->value) }}</td>
 		</tr>
 	@endforeach
 </table>
