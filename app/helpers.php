@@ -1,13 +1,26 @@
 <?php
 
+function formatName($name)
+{
+	if ($name == '') {
+		return $name;
+	}
+
+	$array = explode(' ', $name);
+
+	if (isset($array[3])) {
+		return $array[0] . ' ' . $array[2];
+	}
+
+	return $array[0] . ' ' . $array[1];
+}
+
 function statTrans($key)
 {
-	if (file_exists('resources/lang/es/stats.php')) {
-		$array = file_get_contents('resources/lang/es/stats.php');
-
-		if (in_array($key, $array)) {
-			return $array[$key];
-		}
+	$array = require 'resources/lang/es/stats.php';
+	
+	if (isset($array[$key]) && $array[$key] != '') {
+		return $array[$key];
 	}
 
 	return $key;

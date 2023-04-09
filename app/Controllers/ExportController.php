@@ -72,7 +72,7 @@ class ExportController extends Controller
             }
         }
 
-        if (get('type') == 'playerStats') {
+        if (get('type') == 'playerStats' && get('fixture')) {
             $response = http()
                 ->withToken($this->token)
                 ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . get('fixture') . '?detailed=yes&_rt=b&_fmt=json');
@@ -178,7 +178,7 @@ class ExportController extends Controller
             $data[$i]['time'] = (new DateTime($item->fixture->date))->format('H:i');
             $data[$i]['away'] = $item->teams->away->name;
             
-            if ($item->fixture->status->short == 'FT') {
+            if ($item->fixture->status->short != 'NS') {
                 $result = $item->goals->home . '-' . $item->goals->away;
 
                 $data[$i]['result'] = $result;
@@ -209,10 +209,10 @@ class ExportController extends Controller
             for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
                 if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
                     $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                    $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->matchName;
+                    $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
                 } else {
                     $data['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                    $data['local']['substitutes'][$j]['name'] = $response->liveData->lineUp[0]->player[$i]->matchName;
+                    $data['local']['substitutes'][$j]['name'] = $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
                     $j++;
                 }
             }
@@ -227,10 +227,10 @@ class ExportController extends Controller
             for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
                 if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
                     $data['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                    $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->matchName;
+                    $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
                 } else {
                     $data['away']['substitutes'][$j]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                    $data['away']['substitutes'][$j]['name'] = $response->liveData->lineUp[1]->player[$i]->matchName;
+                    $data['away']['substitutes'][$j]['name'] = $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
                     $j++;
                 }
             }
@@ -392,13 +392,15 @@ class ExportController extends Controller
             $data[$home]['reds'] = 0;
             $data[$away]['reds'] = 0;
 
-            foreach ($response->card as $card) {
-                if ($card->type == 'RC' && $card->contestantId == $data[$home]['contestantId']) {
-                    $data[$home]['reds'] = $data[$home]['reds'] + 1;
-                }
+            if (isset($response->card)) {
+                foreach ($response->card as $card) {
+                    if ($card->type == 'RC' && $card->contestantId == $data[$home]['contestantId']) {
+                        $data[$home]['reds'] = $data[$home]['reds'] + 1;
+                    }
 
-                if ($card->type == 'RC' && $card->contestantId == $data[$away]['contestantId']) {
-                    $data[$away]['reds'] = $data[$away]['reds'] + 1;
+                    if ($card->type == 'RC' && $card->contestantId == $data[$away]['contestantId']) {
+                        $data[$away]['reds'] = $data[$away]['reds'] + 1;
+                    }
                 }
             }
 
@@ -553,7 +555,7 @@ class ExportController extends Controller
             }
         }
 
-        foreach ($response->liveData->lineUp[1]->player as $player) {
+        foreach ($response->liveData->lineUp[1]->player as $item) {
             if ($item->playerId == $player) {
                 $data = $item;
             }

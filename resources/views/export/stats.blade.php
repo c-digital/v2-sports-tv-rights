@@ -21,45 +21,45 @@
 	</tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['corners'] }}</td>
+    	<td class="right">{{ $data[$local]['corners'] ?? 0 }}</td>
     	<td class="center">Corners</td>
-    	<td>{{ $data[$away]['corners'] }}</td>
+    	<td>{{ $data[$away]['corners'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['shots'] }}</td>
+    	<td class="right">{{ $data[$local]['shots'] ?? 0 }}</td>
     	<td class="center">Tiros</td>
-    	<td>{{ $data[$away]['shots'] }}</td>
+    	<td>{{ $data[$away]['shots'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['shots_on_goal'] }}</td>
+    	<td class="right">{{ $data[$local]['shots_on_goal'] ?? 0 }}</td>
     	<td class="center">Tiros a puerta</td>
-    	<td>{{ $data[$away]['shots_on_goal'] }}</td>
+    	<td>{{ $data[$away]['shots_on_goal'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['fouls'] }}</td>
+    	<td class="right">{{ $data[$local]['fouls'] ?? 0 }}</td>
     	<td class="center">Faltas</td>
-    	<td>{{ $data[$away]['fouls'] }}</td>
+    	<td>{{ $data[$away]['fouls'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['offside'] }}</td>
+    	<td class="right">{{ $data[$local]['offside'] ?? 0 }}</td>
     	<td class="center">Offside</td>
-    	<td>{{ $data[$away]['offside'] }}</td>
+    	<td>{{ $data[$away]['offside'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['possession'] }}</td>
+    	<td class="right">{{ $data[$local]['possession'] ?? 0 }}</td>
     	<td class="center">Posesion</td>
-    	<td>{{ $data[$away]['possession'] }}</td>
+    	<td>{{ $data[$away]['possession'] ?? 0 }}</td>
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['yellows'] }}</td>
+    	<td class="right">{{ $data[$local]['yellows'] ?? 0 }}</td>
     	<td class="center">Amarillas</td>
-    	<td>{{ $data[$away]['yellows'] }}</td>
+    	<td>{{ $data[$away]['yellows'] ?? 0 }}</td>
     </tr>
 
     <tr>
@@ -69,8 +69,8 @@
     </tr>
 
     <tr>
-    	<td class="right">{{ $data[$local]['expected_goals'] ?? 0 }}</td>
+    	<td class="right">{{ isset($data[$local]['expected_goals']) ? number_format($data[$local]['expected_goals'], 2) : 0 }}</td>
     	<td class="center">Goles esperados</td>
-    	<td>{{ $data[$away]['expected_goals'] ?? 0 }}</td>
+    	<td>{{ isset($data[$away]['expected_goals']) ? number_format($data[$away]['expected_goals'], 2) : 0 }}</td>
     </tr>
 </table>
