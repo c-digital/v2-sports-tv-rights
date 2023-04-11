@@ -1,25 +1,50 @@
 <x-template-dashboard active="bolivia.copa">
 	<div class="w-full p-7">
-        <h1 class="text-3xl mb-4">{{ 'Copa Bolivia' }}</h1>
+        <div class="flex justify-between">
+            <div>
+                <h1 class="text-3xl mb-4">{{ 'Copa Tigo FBF' }}</h1>
+            </div>
+
+            <div>
+                <input @change="refreshPage()" id="date" type="date" name="date" value="{{ get('date') ?? now('Y-m-d') }}">
+            </div>
+        </div>
 
         <x-alert></x-alert>
 
         <div class="bg-white border rounded shadow p-5 text-lg">
-            <div id="wg-api-football-games"
-				data-host="v3.football.api-sports.io"
-				data-key="76e449a048284c4ad2336531b8c06ab2"
-				data-date="{{ now('Y-m-d') }}"
-				data-league="964"
-				data-season="{{ now('Y') }}"
-				data-theme=""
-				data-refresh="15"
-				data-show-toolbar="true"
-				data-show-errors="false"
-				data-show-logos="true"
-				data-modal-game="true"
-				data-modal-standings="true"
-				data-modal-show-logos="true">
-			</div>
+            <opta-widget
+                widget="fixtures"
+                competition="593"
+                season="2023"
+                template="normal"
+                live="true"
+                date_from="{{ get('date') ?? now('Y-m-d') }}"
+                date_to="{{ get('date') ?? now('Y-m-d') }}"
+                show_venue="false"
+                match_status="all"
+                grouping="date"
+                show_grouping="true"
+                navigation="none"
+                default_nav="1"
+                start_on_current="true"
+                sub_grouping="date"
+                show_subgrouping="false"
+                order_by="date_ascending"
+                show_crests="true"
+                date_format="dddd D MMMM YYYY"
+                time_format="HH:mm"
+                month_date_format="MMMM"
+                competition_naming="full"
+                team_naming="full"
+                pre_match="false"
+                show_live="true"
+                match_link="/match/summary?"
+                show_logo="false"
+                show_title="true"
+                breakpoints="400"
+                sport="football">
+            </opta-widget>
         </div>
     </div>
 </x-template-dashboard>

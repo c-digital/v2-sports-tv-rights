@@ -1,5 +1,18 @@
 <?php
 
+function queryString()
+{
+	$queryString = [];
+
+	foreach ($_GET as $key => $value) {
+		$queryString[] = "$key=$value";
+	}
+
+	$queryString = implode('&', $queryString);
+
+	return $queryString;
+}
+
 function formatName($name)
 {
 	if ($name == '') {

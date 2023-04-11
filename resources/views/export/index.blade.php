@@ -13,15 +13,6 @@
 	        			<option value=""></option>
 	        			<option {{ get('league') == 344 ? 'selected' : '' }} value="344">Liga Bolivia</option>
 	        			<option {{ get('league') == 964 ? 'selected' : '' }} value="964">Copa Bolivia</option>
-	        			<option {{ get('league') == 140 ? 'selected' : '' }} value="140">Liga España</option>
-	        			<option {{ get('league') == 143 ? 'selected' : '' }} value="143">Copa del Rey</option>
-	        			<option {{ get('league') == 39 ? 'selected' : '' }} value="39">Premier League</option>
-	        			<option {{ get('league') == 2 ? 'selected' : '' }} value="2">Champions League</option>
-	        			<option {{ get('league') == 3 ? 'selected' : '' }} value="3">Europa League</option>
-	        			<option {{ get('league') == 15 ? 'selected' : '' }} value="15">Liga Italia</option>
-	        			<option {{ get('league') == 128 ? 'selected' : '' }} value="128">Liga Argentina</option>
-	        			<option {{ get('league') == 61 ? 'selected' : '' }} value="61">Liga Francia</option>
-	        			<option {{ get('league') == 78 ? 'selected' : '' }} value="78">Liga Alemania</option>
 	        		</select>
 		        </div>
 

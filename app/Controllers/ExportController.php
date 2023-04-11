@@ -175,7 +175,7 @@ class ExportController extends Controller
             $data[$i]['local'] = $item->teams->home->name;
             $data[$i]['date'] = (new DateTime($item->fixture->date))->format('d-M');
             $data[$i]['datetime'] = (new DateTime($item->fixture->date))->format('Y-m-d H:i:s');
-            $data[$i]['time'] = (new DateTime($item->fixture->date))->format('H:i');
+            $data[$i]['time'] = ((new DateTime($item->fixture->date))->modify('-4hour'))->format('H:i');
             $data[$i]['away'] = $item->teams->away->name;
             
             if ($item->fixture->status->short != 'NS') {
