@@ -354,7 +354,19 @@ class ExportController extends Controller
 
                 if ($stat->type == 'totalYellowCard') {
                     $data[$home]['yellows'] = $stat->value;
-                }                
+                }
+
+                if ($stat->type == 'totalPass') {
+                    $data[$home]['passes'] = $stat->value;
+                }
+
+                if ($stat->type == 'accuratePass') {
+                    $data[$home]['successfulPasses'] = $stat->value;
+                }
+
+                if ($stat->type == 'totalFinalThirdPasses') {
+                    $data[$home]['passesLastThird'] = $stat->value;
+                }
             }
 
             $data[$away]['contestantId'] = $response->lineUp[1]->contestantId;
@@ -386,7 +398,19 @@ class ExportController extends Controller
 
                 if ($stat->type == 'totalYellowCard') {
                     $data[$away]['yellows'] = $stat->value;
-                }                
+                }
+
+                if ($stat->type == 'totalPass') {
+                    $data[$away]['passes'] = $stat->value;
+                }
+
+                if ($stat->type == 'accuratePass') {
+                    $data[$away]['successfulPasses'] = $stat->value;
+                }
+
+                if ($stat->type == 'totalFinalThirdPasses') {
+                    $data[$away]['passesLastThird'] = $stat->value;
+                }  
             }
 
             $data[$home]['reds'] = 0;

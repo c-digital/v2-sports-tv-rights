@@ -47,4 +47,28 @@ class MatchController extends Controller
     {
         return view('matches.heat-map');
     }
+
+    /**
+     * Standing page.
+     */
+    public function standings(): View
+    {
+        return view('matches.standings');
+    }
+
+    /**
+     * Replay page.
+     */
+    public function replay(): View
+    {
+        return view('matches.replay');
+    }
+
+    /**
+     * Dynamic page.
+     */
+    public function dynamic(): View
+    {
+        return view('matches.dynamic');
+    }
 }

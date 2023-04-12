@@ -26,6 +26,9 @@ $route->get('/match/summary', [MatchController::class, 'summary']);
 $route->get('/match/lineups', [MatchController::class, 'lineups']);
 $route->get('/match/stats', [MatchController::class, 'stats']);
 $route->get('/match/heat-map', [MatchController::class, 'heatMap']);
+$route->get('/match/standings', [MatchController::class, 'standings']);
+$route->get('/match/replay', [MatchController::class, 'replay']);
+$route->get('/match/dynamic', [MatchController::class, 'dynamic']);
 
 $route->get('/export', [ExportController::class, 'index']);
 $route->post('/export', [ExportController::class, 'export']);

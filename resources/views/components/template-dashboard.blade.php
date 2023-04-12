@@ -104,13 +104,15 @@
                         </a>
                     </li>
 
-                    @if(auth()->role == 'admin')
+                    @if(auth()->role == 'producer' || auth()->role == 'admin')                    
                         <li class="mr-2 my-2 md:my-0">
                             <a href="/export" class="{{ ($active == 'export') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
                                 <i class="fas fa-download fa-fw mr-2"></i> <span class="pb-1 md:pb-0 text-sm">Exportar datos</span>
                             </a>
                         </li>
+                    @endif
 
+                    @if(auth()->role == 'admin')
                         <li class="mr-3 my-2 md:my-0">
                             <a href="/dashboard/users" class="{{ ($active == 'users') ? 'block py-1 md:py-3 pl-1 align-middle text-green-600 no-underline hover:text-green-900 border-b-2 border-green-600 hover:border-green-600' : 'block py-1 md:py-3 pl-1 align-middle text-gray-500 no-underline hover:text-gray-900 border-b-2 border-white hover:border-silver-500' }}">
                                 <i class="fas fa-users fa-fw mr-3"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.users') }}</span>

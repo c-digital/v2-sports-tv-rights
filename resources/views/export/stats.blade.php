@@ -73,4 +73,22 @@
     	<td class="center">Goles esperados</td>
     	<td>{{ isset($data[$away]['expected_goals']) ? number_format($data[$away]['expected_goals'], 2) : 0 }}</td>
     </tr>
+
+    <tr>
+    	<td class="right">{{ $data[$local]['passes'] ?? 0 }}</td>
+    	<td class="center">Pases</td>
+    	<td>{{ $data[$away]['passes'] ?? 0 }}</td>
+    </tr>
+
+    <tr>
+    	<td class="right">{{ $data[$local]['successfulPasses'] ?? 0 }}</td>
+    	<td class="center">Pases acertados</td>
+    	<td>{{ $data[$away]['successfulPasses'] ?? 0 }}</td>
+    </tr>
+
+    <tr>
+    	<td class="right">{{ $data[$local]['passesLastThird'] ?? 0 }}</td>
+    	<td class="center">Pases en el último tercio</td>
+    	<td>{{ $data[$away]['passesLastThird'] ?? 0 }}</td>
+    </tr>
 </table>
