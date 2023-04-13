@@ -101,6 +101,7 @@
 
                         <input type="hidden" name="name" value="{{ $user->name }}">
                         <input type="hidden" name="email" value="{{ $user->email }}">
+                        <input type="hidden" name="role" value="{{ $user->role }}">
                     </form>
                 </div>
             </div>

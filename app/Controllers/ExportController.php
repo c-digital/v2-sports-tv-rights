@@ -23,7 +23,7 @@ class ExportController extends Controller
     {
         $this->middleware('Auth');
         
-        if (auth()->role != 'admin') {
+        if (auth()->role != 'admin' && auth()->role != 'producer') {
             return abort(401);
         }
         
@@ -133,7 +133,7 @@ class ExportController extends Controller
 
             $response = http()
                 ->withToken($this->token)
-                ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
+                ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
 
             $response = json($response->body())->stage[0]->division[0]->ranking;
 
