@@ -37,7 +37,7 @@
                 month_date_format="MMMM"
                 competition_naming="full"
                 team_naming="full"
-                pre_match="false"
+                pre_match="true"
                 show_live="true"
                 match_link="/match/summary?"
                 show_logo="false"

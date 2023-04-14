@@ -575,7 +575,53 @@ class ExportController extends Controller
 
         foreach ($response->liveData->lineUp[0]->player as $item) {
             if ($item->playerId == $player) {
+                $position = $item->position;
+
                 $data = $item;
+
+                $item = (array) $item->stat;
+
+                $i = array_search('goals', array_column($item, 'type'));
+                $stats['goals'] = $item[$i]->value;
+
+                $i = array_search('ontargetScoringAtt', array_column($item, 'type'));
+                $stats['shots_on_goal'] = $item[$i]->value;
+
+                $i = array_search('totalScoringAtt', array_column($item, 'type'));
+                $stats['shots'] = $item[$i]->value;
+
+                $i = array_search('touches', array_column($item, 'type'));
+                $stats['touches'] = $item[$i]->value;
+
+                $i = array_search('totalPass', array_column($item, 'type'));
+                $stats['pass'] = $item[$i]->value ?? 0;
+
+                $i = array_search('accuratePass', array_column($item, 'type'));
+                $stats['successful_pass'] = $item[$i]->value ?? 0;
+
+                if ($stats['pass'] != '') {
+                    $i = array_search('totalPass', array_column($item, 'type'));
+                    $stats['percentage_successful_pass'] = ($stats['successful_pass'] * 100) / $stats['pass'];
+                    $stats['percentage_successful_pass'] = number_format($stats['percentage_successful_pass'], 2);
+                    $stats['percentage_successful_pass'] = $stats['percentage_successful_pass'] . '%';
+                }
+
+                $i = array_search('wasFouled', array_column($item, 'type'));
+                $stats['fouls_received'] = $item[$i]->value ?? 0;
+
+                $i = array_search('fouls', array_column($item, 'type'));
+                $stats['fouls'] = $item[$i]->value ?? 0;
+
+                $i = array_search('duelWons', array_column($item, 'type'));
+                $stats['duel_wons'] = $item[$i]->value ?? 0;
+
+                $i = array_search('ballRecovery', array_column($item, 'type'));
+                $stats['recoveries'] = $item[$i]->value ?? 0;
+
+                if ($position == 'Goalkeeper') {
+                    $i = array_search('saves', array_column($item, 'type'));
+                    $stats['stops'] = $item[$i]->value ?? 0;
+                }
             }
         }
 
@@ -585,6 +631,6 @@ class ExportController extends Controller
             }
         }
 
-        return view('export.player-stats', compact('data'));
+        return view('export.player-stats', compact('data', 'stats', 'position'));
     }
 }
