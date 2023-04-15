@@ -575,52 +575,107 @@ class ExportController extends Controller
 
         foreach ($response->liveData->lineUp[0]->player as $item) {
             if ($item->playerId == $player) {
-                $position = $item->position;
-
                 $data = $item;
-
+                $position = $item->position;
                 $item = (array) $item->stat;
 
                 $i = array_search('goals', array_column($item, 'type'));
-                $stats['goals'] = $item[$i]->value;
+
+                if ($i) {
+                    $stats['goals'] = $item[$i]->value;
+                }
 
                 $i = array_search('ontargetScoringAtt', array_column($item, 'type'));
-                $stats['shots_on_goal'] = $item[$i]->value;
+
+                if ($i) {
+                    $stats['shots_on_goal'] = $item[$i]->value;
+                }
 
                 $i = array_search('totalScoringAtt', array_column($item, 'type'));
-                $stats['shots'] = $item[$i]->value;
+
+                if ($i) {
+                    $stats['shots'] = $item[$i]->value;
+                }
 
                 $i = array_search('touches', array_column($item, 'type'));
-                $stats['touches'] = $item[$i]->value;
+
+                if ($i) {
+                    $stats['touches'] = $item[$i]->value;
+                }
 
                 $i = array_search('totalPass', array_column($item, 'type'));
-                $stats['pass'] = $item[$i]->value ?? 0;
+
+                if ($i) {
+                    $stats['pass'] = $item[$i]->value;
+                }
 
                 $i = array_search('accuratePass', array_column($item, 'type'));
-                $stats['successful_pass'] = $item[$i]->value ?? 0;
+
+                if ($i) {
+                    $stats['successful_pass'] = $item[$i]->value;
+                }
+
+                $i = array_search('bigChanceCreated', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['great_scoring_chances'] = $item[$i]->value;
+                }
 
                 if ($stats['pass'] != '') {
                     $i = array_search('totalPass', array_column($item, 'type'));
-                    $stats['percentage_successful_pass'] = ($stats['successful_pass'] * 100) / $stats['pass'];
-                    $stats['percentage_successful_pass'] = number_format($stats['percentage_successful_pass'], 2);
-                    $stats['percentage_successful_pass'] = $stats['percentage_successful_pass'] . '%';
+
+                    if ($i) {
+                        $stats['percentage_successful_pass'] = ($stats['successful_pass'] * 100) / $stats['pass'];
+                        $stats['percentage_successful_pass'] = number_format($stats['percentage_successful_pass'], 2);
+                        $stats['percentage_successful_pass'] = $stats['percentage_successful_pass'] . '%';
+                    }
                 }
 
                 $i = array_search('wasFouled', array_column($item, 'type'));
-                $stats['fouls_received'] = $item[$i]->value ?? 0;
+
+                if ($i) {
+                    $stats['fouls_received'] = $item[$i]->value ?? 0;
+                }
 
                 $i = array_search('fouls', array_column($item, 'type'));
-                $stats['fouls'] = $item[$i]->value ?? 0;
+
+                if ($i) {
+                    $stats['fouls'] = $item[$i]->value ?? 0;
+                }
 
                 $i = array_search('duelWons', array_column($item, 'type'));
-                $stats['duel_wons'] = $item[$i]->value ?? 0;
+
+                if ($i) {
+                    $stats['duel_wons'] = $item[$i]->value ?? 0;
+                }
 
                 $i = array_search('ballRecovery', array_column($item, 'type'));
-                $stats['recoveries'] = $item[$i]->value ?? 0;
+
+                if ($i) {
+                    $stats['recoveries'] = $item[$i]->value ?? 0;
+                }
 
                 if ($position == 'Goalkeeper') {
                     $i = array_search('saves', array_column($item, 'type'));
-                    $stats['stops'] = $item[$i]->value ?? 0;
+
+                    if ($i) {
+                        $stats['stops'] = $item[$i]->value ?? 0;
+                    }
+
+                    $i = array_search('attemptsConcededIbox', array_column($item, 'type'));
+                    $j = array_search('attemptsConcededObox', array_column($item, 'type'));
+
+                    if ($i || $j) {
+                        $ibox = $item[$i]->value ?? 0;
+                        $obox = $item[$j]->value ?? 0;
+
+                        $stats['auctions_received'] = $ibox;
+
+                        if ($stats['auctions_received'] != '') {
+                            $stats['percentage_stops'] = ($stats['stops'] * 100) / $stats['auctions_received'];
+                            $stats['percentage_stops'] = number_format($stats['percentage_stops'], 2) . '%';
+                        }
+                    }
                 }
             }
         }
@@ -628,6 +683,125 @@ class ExportController extends Controller
         foreach ($response->liveData->lineUp[1]->player as $item) {
             if ($item->playerId == $player) {
                 $data = $item;
+                $position = $item->position;
+                $item = (array) $item->stat;
+
+                $i = array_search('goals', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['goals'] = $item[$i]->value;
+                }
+
+                $i = array_search('ontargetScoringAtt', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['shots_on_goal'] = $item[$i]->value;
+                }
+
+                $i = array_search('totalScoringAtt', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['shots'] = $item[$i]->value;
+                }
+
+                $i = array_search('touches', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['touches'] = $item[$i]->value;
+                }
+
+                $i = array_search('totalPass', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['pass'] = $item[$i]->value;
+                }
+
+                $i = array_search('accuratePass', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['successful_pass'] = $item[$i]->value;
+                }
+
+                $i = array_search('bigChanceCreated', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['great_scoring_chances'] = $item[$i]->value;
+                }
+
+                if ($stats['pass'] != '') {
+                    $i = array_search('totalPass', array_column($item, 'type'));
+
+                    if ($i) {
+                        $stats['percentage_successful_pass'] = ($stats['successful_pass'] * 100) / $stats['pass'];
+                        $stats['percentage_successful_pass'] = number_format($stats['percentage_successful_pass'], 2);
+                        $stats['percentage_successful_pass'] = $stats['percentage_successful_pass'] . '%';
+                    }
+                }
+
+                $i = array_search('wasFouled', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['fouls_received'] = $item[$i]->value ?? 0;
+                }
+
+                $i = array_search('totalAttAssist', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['created_occasions'] = $item[$i]->value ?? 0;
+                }
+
+                $i = array_search('totalTackle', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['interception'] = $item[$i]->value ?? 0;
+                }
+
+                $i = array_search('intersections', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['entries'] = $item[$i]->value ?? 0;
+                }
+
+                $i = array_search('fouls', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['fouls'] = $item[$i]->value ?? 0;
+                }
+
+                $i = array_search('duelWons', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['duel_wons'] = $item[$i]->value ?? 0;
+                }
+
+                $i = array_search('ballRecovery', array_column($item, 'type'));
+
+                if ($i) {
+                    $stats['recoveries'] = $item[$i]->value ?? 0;
+                }
+
+                if ($position == 'Goalkeeper') {
+                    $i = array_search('saves', array_column($item, 'type'));
+
+                    if ($i) {
+                        $stats['stops'] = $item[$i]->value ?? 0;
+                    }
+
+                    $i = array_search('attemptsConcededIbox', array_column($item, 'type'));
+                    $j = array_search('attemptsConcededObox', array_column($item, 'type'));
+
+                    if ($i || $j) {
+                        $ibox = $item[$i]->value ?? 0;
+                        $obox = $item[$j]->value ?? 0;
+
+                        $stats['auctions_received'] = $ibox;
+
+                        if ($stats['auctions_received'] != '') {
+                            $stats['percentage_stops'] = ($stats['stops'] * 100) / $stats['auctions_received'];
+                            $stats['percentage_stops'] = number_format($stats['percentage_stops'], 2) . '%';
+                        }
+                    }
+                }
             }
         }
 

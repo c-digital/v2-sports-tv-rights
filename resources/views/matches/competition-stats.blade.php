@@ -48,35 +48,24 @@
 
         <div class="bg-white border rounded shadow p-5 mt-5 text-lg">
             <opta-widget
-            	widget="matchstats_pro"
-            	competition="{{ get('competition') }}"
-            	season="{{ get('season') }}"
-            	match="{{ get('match') }}"
-            	template="team_graphs"
-            	live="true"
-            	navigation="tabs_more"
-            	default_nav="1"
-            	show_match_header="true"
-            	show_score="true"
-            	show_halftime_score="false"
-            	show_crests="false"
-            	show_competition_name="true"
-            	graph_style="full"
-            	show_date="false"
-            	date_format="dddd D MMMM YYYY"
-            	show_timecontrols="true"
-            	show_timecontrols_buttons="true"
-            	show_timecontrols_bar="true"
-            	extended_content="false"
-            	rounding="1"
-            	competition_naming="full"
-            	team_naming="full"
-            	show_live="true"
-            	show_logo="false"
-            	show_title="true"
-            	breakpoints="400, 700"
-            	sport="football">            	
-        </opta-widget>
+                widget="competition_stats"
+                competition="{{ get('competition') }}"
+                season="{{ get('season') }}"
+                template="normal"
+                show_crests="true"
+                show_images="true"
+                show_ranks="true"
+                show_player_rankings="true"
+                show_team_rankings="true"
+                visible_stats="goals,shots,shots_on_target,passes,cards_yellow,cards_red"
+                limit="3"
+                team_naming="full"
+                player_naming="full"
+                show_logo="false"
+                show_title="true"
+                breakpoints="400"
+                sport="football">    
+            </opta-widget>
         </div>
     </div>
 </x-template-dashboard>

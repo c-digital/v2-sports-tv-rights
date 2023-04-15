@@ -32,6 +32,20 @@
             Tabla de posiciones dinámica
         </a>
 
+        <br><br>
+
+        <a href="{{ '/match/compare?' . queryString() }}" class="match-btn text-center items-center mr-1 p-3 appearance-none bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-black active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+            Comparación de jugadores
+        </a>
+
+        <a href="{{ '/match/referees?' . queryString() }}" class="match-btn text-center items-center mr-1 p-3 appearance-none bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-black active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+            Árbitros
+        </a>
+
+        <a href="{{ '/match/competition-stats?' . queryString() }}" class="match-btn text-center items-center mr-1 p-3 appearance-none bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-black active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+            Estadísticas de competición
+        </a>
+
         <div class="bg-white border rounded shadow p-5 mt-5 text-lg">
             <opta-widget
             	widget="season_standings"

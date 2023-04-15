@@ -98,5 +98,15 @@
 			<th class="left">Paradas</th>
 			<td>{{ $stats['stops'] ?? 0 }}</td>
 		</tr>
+
+		<tr>
+			<th class="left">Remates recibidos</th>
+			<td>{{ $stats['auctions_received'] ?? 0 }}</td>
+		</tr>
+
+		<tr>
+			<th class="left">Porcentaje de paradas</th>
+			<td>{{ $stats['percentage_stops'] ?? '0.00%' }}</td>
+		</tr>
 	@endif
 </table>

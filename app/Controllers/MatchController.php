@@ -71,4 +71,28 @@ class MatchController extends Controller
     {
         return view('matches.dynamic');
     }
+
+    /**
+     * Compare page.
+     */
+    public function compare(): View
+    {
+        return view('matches.compare');
+    }
+
+    /**
+     * Referees page.
+     */
+    public function referees(): View
+    {
+        return view('matches.referees');
+    }
+
+    /**
+     * Competition stats page.
+     */
+    public function competitionStats(): View
+    {
+        return view('matches.competition-stats');
+    }
 }
