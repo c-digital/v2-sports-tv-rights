@@ -6,13 +6,13 @@
             </div>
 
             <div>
-                <input @change="refreshPage()" id="date" type="date" name="date" value="{{ get('date') ?? now('Y-m-d') }}">
+                <input class="text-black" @change="refreshPage()" id="date" type="date" name="date" value="{{ get('date') ?? now('Y-m-d') }}">
             </div>
         </div>
 
         <x-alert></x-alert>
 
-        <div class="bg-white border rounded shadow p-5 text-lg">
+        <div class="bg-white rounded shadow p-5 text-lg">
             <opta-widget
                 widget="fixtures"
                 competition="592"

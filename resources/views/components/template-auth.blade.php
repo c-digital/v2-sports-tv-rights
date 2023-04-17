@@ -17,6 +17,15 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<style>
+    body {
+        background: url('{{ asset('img/fondo.jpg')  }}');
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+
 </head>
 
 <body class="body-bg min-h-screen pt-12 md:pt-20 pb-2 px-2 md:px-0 bg-gray-100">

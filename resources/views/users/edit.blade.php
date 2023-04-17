@@ -161,7 +161,7 @@
                     <h2>{{ lang('users.delete_account_permanently') }}</h2>
                 </div>
 
-                <div class="w-7/12 rounded bg-white p-7">
+                <div class="w-7/12 rounded text-black bg-white p-7">
                     <div>
                         <p>{{ lang('users.delete_account_text') }}</p>
                     </div>

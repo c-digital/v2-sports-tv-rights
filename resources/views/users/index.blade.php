@@ -8,7 +8,7 @@
             </div>
 
             <div class="text-right">
-                <a href="/dashboard/users/create" class="inline-flex items-center p-3 appearance-none bg-green-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-300 disabled:opacity-25 transition">
+                <a href="/dashboard/users/create" class="inline-flex btn-blue-tigo items-center p-3 appearance-none bg-green-700 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-green-700 active:bg-green-700 focus:outline-none focus:border-green-700 focus:ring focus:ring-green-300 disabled:opacity-25 transition">
                     <i class="fa fa-plus mr-2"></i> 
                     {{ lang('users.create') }}
                 </a>
