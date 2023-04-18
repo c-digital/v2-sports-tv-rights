@@ -24,6 +24,10 @@
         background-repeat: no-repeat;
         background-size: cover;
     }
+
+    .bg-blue-tigo, .btn-blue-tigo {
+        background-color: #071029 !important;
+    }
 </style>
 
 </head>
@@ -42,6 +46,10 @@
             {{ $slot }}
         </section>
     </main>
+
+    <footer class="text-white text-center mb-5">
+        <center>Powered by <img width="150px" src="https://sportstvrights.com/wp-content/uploads/2022/06/SPORTSTVRIGHTS-CON-BOCETO-BLANCO.png" alt=""></center>
+    </footer>
 </body>
 
 </html>

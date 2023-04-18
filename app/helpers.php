@@ -47,23 +47,21 @@ function token()
 
 function type($type)
 {
-	return $type;
-
 	switch ($type) {
 		case 'Main':
-			$type = 'Principal';
+			$type = 'Árbitro';
 			break;
 
 		case 'Lineman 1':
-			$type = 'Línea 1';
+			$type = '1er asistente';
 			break;
 
 		case 'Lineman 2':
-			$type = 'Línea 2';
+			$type = '2do asistente';
 			break;
 
 		case 'Fourth official':
-			$type = 'Cuarto arbitro';
+			$type = '4to arbitro';
 			break;
 	}
 

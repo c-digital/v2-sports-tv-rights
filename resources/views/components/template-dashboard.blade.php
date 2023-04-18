@@ -104,26 +104,26 @@
             <div x-show="showMainMenu" class="mainMenu w-full flex-grow lg:flex lg:items-center lg:w-auto lg:block mt-2 lg:mt-0 z-20">
                 <ul class="list-reset lg:flex flex-1 items-center px-4 md:px-0">
                     <li class="mr-2 my-2 md:my-0">
-                        <a href="/dashboard" class="{{ ($active == 'home') ? 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-orange-400 hover:border-orange-400' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-silver-500' }}">
+                        <a href="/dashboard" class="{{ ($active == 'home') ? 'block py-1 md:py-3 pl-1 align-middle text-[#FFC200] no-underline border-b-2 border-[#FFC200] hover:border-[#FFC200]' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-silver-500' }}">
                             <i class="fas fa-home fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.home') }}</span>
                         </a>
                     </li>
 
                     <li class="mr-2 my-2 md:my-0">
-                        <a href="/bolivia/liga" class="{{ ($active == 'bolivia.liga') ? 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' }}">
+                        <a href="/bolivia/liga" class="{{ ($active == 'bolivia.liga') ? 'block py-1 md:py-3 pl-1 align-middle text-[#FFC200] no-underline border-b-2 border-[#FFC200] hover:border-[#FFC200]' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-[#FFC200]' }}">
                             <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Liga Tigo FBF' }}</span>
                         </a>
                     </li>
 
                     <li class="mr-2 my-2 md:my-0">
-                        <a href="/bolivia/copa" class="{{ ($active == 'bolivia.copa') ? 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' }}">
+                        <a href="/bolivia/copa" class="{{ ($active == 'bolivia.copa') ? 'block py-1 md:py-3 pl-1 align-middle text-[#FFC200] no-underline border-b-2 border-[#FFC200] hover:border-[#FFC200]' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-[#FFC200]' }}">
                             <i class="fas fa-futbol fa-fw mr-2 text-silver-600"></i> <span class="pb-1 md:pb-0 text-sm">{{ 'Copa Tigo FBF' }}</span>
                         </a>
                     </li>
 
                     @if(auth()->role == 'producer' || auth()->role == 'admin')                    
                         <li class="mr-2 my-2 md:my-0">
-                            <a href="/export" class="{{ ($active == 'export') ? 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' }}">
+                            <a href="/export" class="{{ ($active == 'export') ? 'block py-1 md:py-3 pl-1 align-middle text-[#FFC200] no-underline border-b-2 border-[#FFC200] hover:border-[#FFC200]' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-[#FFC200]' }}">
                                 <i class="fas fa-download fa-fw mr-2"></i> <span class="pb-1 md:pb-0 text-sm">Exportar datos</span>
                             </a>
                         </li>
@@ -131,7 +131,7 @@
 
                     @if(auth()->role == 'admin')
                         <li class="mr-3 my-2 md:my-0">
-                            <a href="/dashboard/users" class="{{ ($active == 'users') ? 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 border-white hover:border-orange-400' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 hover:border-orange-400' }}">
+                            <a href="/dashboard/users" class="{{ ($active == 'users') ? 'block py-1 md:py-3 pl-1 align-middle text-[#FFC200] no-underline border-b-2 border-[#FFC200] hover:border-[#FFC200]' : 'block py-1 md:py-3 pl-1 align-middle text-white no-underline border-b-2 hover:border-[#FFC200]' }}">
                                 <i class="fas fa-users fa-fw mr-3"></i> <span class="pb-1 md:pb-0 text-sm">{{ lang('dashboard.users') }}</span>
                             </a>
                         </li>
@@ -147,7 +147,11 @@
                 {{ $slot }}
             </div>
         </div>
-    </div>    
+    </div>
+
+    <footer class="text-white text-center mb-5">
+        <center>Powered by <img width="150px" src="https://sportstvrights.com/wp-content/uploads/2022/06/SPORTSTVRIGHTS-CON-BOCETO-BLANCO.png" alt=""></center>
+    </footer>
 
     <input type="hidden" id="confirm_delete_text" value="{{ lang('users.confirm_delete_text') }}">
     <input type="hidden" id="confirm_delete_accept" value="{{ lang('users.confirm_delete_accept') }}">
