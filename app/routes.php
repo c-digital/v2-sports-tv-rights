@@ -46,3 +46,24 @@ $route->get('/export/playerStats/{fixture}/{player}', [ExportController::class, 
 
 // Users
 $route->resource('/dashboard/users', UserController::class);
+
+$route->get('/test', function () {
+	$token = token();
+	$outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
+
+	$response = http()
+        ->withToken($token)
+        ->get("https://api.performfeeds.com/soccerdata/match/$outletKey?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000");
+
+	foreach (json($response->body())->match as $match) {
+		$weeks[] = $match->matchInfo->week;
+	}
+
+	$weeks = array_unique($weeks);
+
+	foreach ($weeks as $week) {
+		$rounds[] = 'Jornada ' . $week;
+	}
+
+	sort($rounds, SORT_NATURAL);
+});

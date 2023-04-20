@@ -35,16 +35,20 @@ class ExportController extends Controller
 
         if (get('league') && get('type') != 'standings') {
             $response = http()
-                ->withHeaders([
-                    'x-rapidapi-host' => 'v3.football.api-sports.io',
-                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-                ])
-                ->get('https://v3.football.api-sports.io/fixtures/rounds', [
-                    'league' => request('league'),
-                    'season' => $season
-                ]);
+                ->withToken($this->token)
+                ->get("https://api.performfeeds.com/soccerdata/match/$this->outletKey?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000");
 
-            $rounds = json($response->body())->response;
+            foreach (json($response->body())->match as $match) {
+                $weeks[] = $match->matchInfo->week;
+            }
+
+            $weeks = array_unique($weeks);
+
+            foreach ($weeks as $week) {
+                $rounds[] = 'Jornada ' . $week;
+            }
+
+            sort($rounds, SORT_NATURAL);
         }
 
         if (get('round')) {
@@ -62,7 +66,7 @@ class ExportController extends Controller
             $matches = json($response->body())->response;
 
             if (get('league') == 344) {
-                $week = str_replace('Regular Season - ', '', get('round'));
+                $week = str_replace('Jornada ', '', get('round'));
 
                 $response = http()
                     ->withToken($this->token)
@@ -101,52 +105,54 @@ class ExportController extends Controller
 
     public function standings($league)
     {
-        $season = $league == 344 || $league == 964 ? '2023' : '2022';
-
-        $response = http()
-            ->withHeaders([
-                'x-rapidapi-host' => 'v3.football.api-sports.io',
-                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-            ])
-            ->get('https://v3.football.api-sports.io/standings', [
-                'league' => $league,
-                'season' => $season
-            ]);
-
-        $response = json($response->body())->response;
-
-        for ($i = 0; $i < count($response[0]->league->standings[0]); $i++) { 
-            $data[$i]['position'] = $response[0]->league->standings[0][$i]->rank;
-            $data[$i]['team'] = $response[0]->league->standings[0][$i]->team->name;
-            $data[$i]['played'] = $response[0]->league->standings[0][$i]->all->played;
-            $data[$i]['points'] = $response[0]->league->standings[0][$i]->points;
+        if ($league == '344') {
+            $tournamentCalendarId = 'd9kukruep5g7fthaknhbo2k2c';
         }
 
-        if (get('bolivia')) {
-            if ($league == '344') {
-                $tournamentCalendarId = 'd9kukruep5g7fthaknhbo2k2c';
-            }
-
-            if ($league == '964') {
-                $tournamentCalendarId = 'acjvtl7xxvcbcz107c8lieqz8';
-            }
+        if ($league == '964') {
+            $tournamentCalendarId = 'acjvtl7xxvcbcz107c8lieqz8';
 
             $response = http()
                 ->withToken($this->token)
                 ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
 
-            $response = json($response->body())->stage[0]->division[0]->ranking;
-
-            $i = 0;
+            $response = json($response->body())->stage[0]->division;
 
             foreach ($response as $item) {
-                $data[$i]['position'] = $item->rank;
-                $data[$i]['team'] = $item->contestantClubName;
-                $data[$i]['played'] = $item->matchesPlayed;
-                $data[$i]['points'] = $item->points;
+                if ($item->type == 'total') {
+                    $i = 0;
 
-                $i++;
+                    foreach ($item->ranking as $ranking) {
+                        $groupName = str_replace('Group', 'Grupo', $item->groupName);
+
+                        $data[$groupName][$i]['position'] = $ranking->rank;
+                        $data[$groupName][$i]['team'] = $ranking->contestantClubName;
+                        $data[$groupName][$i]['played'] = $ranking->matchesPlayed;
+                        $data[$groupName][$i]['points'] = $ranking->points;
+
+                        $i++;
+                    }
+                }
             }
+
+            return view('export.standings-per-groups', compact('data'));
+        }
+
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
+
+        $response = json($response->body())->stage[0]->division[0]->ranking;
+
+        $i = 0;
+
+        foreach ($response as $item) {
+            $data[$i]['position'] = $item->rank;
+            $data[$i]['team'] = $item->contestantClubName;
+            $data[$i]['played'] = $item->matchesPlayed;
+            $data[$i]['points'] = $item->points;
+
+            $i++;
         }
 
         return view('export.standings', compact('data'));
@@ -156,30 +162,25 @@ class ExportController extends Controller
     {
         $season = $league == 344 || $league == 964 ? '2023' : '2022';
 
-        $response = http()
-            ->withHeaders([
-                'x-rapidapi-host' => 'v3.football.api-sports.io',
-                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-            ])
-            ->get('https://v3.football.api-sports.io/fixtures', [
-                'round' => $round,
-                'league' => $league,
-                'season' => $season
-            ]);
+        $week = str_replace('Jornada ', '', $round);
 
-        $response = json($response->body())->response;
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/match/' . $this->outletKey . '?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000&week=' . $week);
+
+        $response = json($response->body());
 
         $i = 0;
 
-        foreach ($response as $item) {
-            $data[$i]['local'] = $item->teams->home->name;
-            $data[$i]['date'] = (new DateTime($item->fixture->date))->format('d-M');
-            $data[$i]['datetime'] = (new DateTime($item->fixture->date))->format('Y-m-d H:i:s');
-            $data[$i]['time'] = ((new DateTime($item->fixture->date))->modify('-4hour'))->format('H:i');
-            $data[$i]['away'] = $item->teams->away->name;
+        foreach ($response->match as $item) {
+            $data[$i]['local'] = explode(' vs ', $item->matchInfo->description)[0];
+            $data[$i]['date'] = (new DateTime($item->matchInfo->localDate))->format('d-M');
+            $data[$i]['datetime'] = (new DateTime($item->matchInfo->localDate))->format('Y-m-d H:i:s');
+            $data[$i]['time'] = ((new DateTime($item->matchInfo->localTime))->modify('-4hour'))->format('H:i');
+            $data[$i]['away'] = explode(' vs ', $item->matchInfo->description)[1];
             
-            if ($item->fixture->status->short != 'NS') {
-                $result = $item->goals->home . '-' . $item->goals->away;
+            if ($item->liveData->matchDetails->matchStatus != 'Fixture') {
+                $result = $item->liveData->matchDetails->scores->total->home . '-' . $item->liveData->matchDetails->scores->total->away;
 
                 $data[$i]['result'] = $result;
             }
@@ -356,6 +357,14 @@ class ExportController extends Controller
                     $data[$home]['yellows'] = $stat->value;
                 }
 
+                if ($stat->type == 'secondYellow') {
+                    $data[$home]['second_yellow'] = $stat->value;
+                }
+
+                if ($stat->type == 'totalRedCard') {
+                    $data[$home]['reds'] = $stat->value;
+                }
+
                 if ($stat->type == 'totalPass') {
                     $data[$home]['passes'] = $stat->value;
                 }
@@ -366,6 +375,18 @@ class ExportController extends Controller
 
                 if ($stat->type == 'totalFinalThirdPasses') {
                     $data[$home]['passesLastThird'] = $stat->value;
+                }
+
+                if ($stat->type == 'accuratePass') {
+                    $data[$home]['accuratePass'] = $stat->value;
+                }
+
+                if ($stat->type == 'totalPass') {
+                    $data[$home]['totalPass'] = $stat->value;
+                }
+
+                if (isset($data[$home]['accuratePass']) && isset($data[$home]['totalPass'])) {
+                    $data[$home]['precision'] = number_format(($data[$home]['accuratePass'] / $data[$home]['totalPass']) * 100, 2);
                 }
             }
 
@@ -400,6 +421,14 @@ class ExportController extends Controller
                     $data[$away]['yellows'] = $stat->value;
                 }
 
+                if ($stat->type == 'secondYellow') {
+                    $data[$away]['second_yellow'] = $stat->value;
+                }
+
+                if ($stat->type == 'totalRedCard') {
+                    $data[$away]['reds'] = $stat->value;
+                }
+
                 if ($stat->type == 'totalPass') {
                     $data[$away]['passes'] = $stat->value;
                 }
@@ -410,21 +439,18 @@ class ExportController extends Controller
 
                 if ($stat->type == 'totalFinalThirdPasses') {
                     $data[$away]['passesLastThird'] = $stat->value;
-                }  
-            }
+                }
 
-            $data[$home]['reds'] = 0;
-            $data[$away]['reds'] = 0;
+                if ($stat->type == 'accuratePass') {
+                    $data[$away]['accuratePass'] = $stat->value;
+                }
 
-            if (isset($response->card)) {
-                foreach ($response->card as $card) {
-                    if ($card->type == 'RC' && $card->contestantId == $data[$home]['contestantId']) {
-                        $data[$home]['reds'] = $data[$home]['reds'] + 1;
-                    }
+                if ($stat->type == 'totalPass') {
+                    $data[$away]['totalPass'] = $stat->value;
+                }
 
-                    if ($card->type == 'RC' && $card->contestantId == $data[$away]['contestantId']) {
-                        $data[$away]['reds'] = $data[$away]['reds'] + 1;
-                    }
+                if (isset($data[$away]['accuratePass']) && isset($data[$away]['totalPass'])) {
+                    $data[$away]['precision'] = number_format(($data[$away]['accuratePass'] / $data[$away]['totalPass']) * 100, 2);
                 }
             }
 

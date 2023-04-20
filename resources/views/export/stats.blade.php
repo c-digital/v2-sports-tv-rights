@@ -91,4 +91,16 @@
     	<td class="center">Pases en el último tercio</td>
     	<td>{{ $data[$away]['passesLastThird'] ?? 0 }}</td>
     </tr>
+
+    <tr>
+        <td class="right">{{ $data[$local]['second_yellow'] ?? 0 }}</td>
+        <td class="center">Segundas amarillas</td>
+        <td>{{ $data[$away]['second_yellow'] ?? 0 }}</td>
+    </tr>
+
+    <tr>
+        <td class="right">{{ $data[$local]['precision'] ?? 0 }}</td>
+        <td class="center">Precisión %</td>
+        <td>{{ $data[$away]['precision'] ?? 0 }}</td>
+    </tr>
 </table>
