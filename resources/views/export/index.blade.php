@@ -11,8 +11,8 @@
 		        	<label class="inline-block w-32 text-black" for="league">Competición</label>
 		        	<select class="text-dark" @change="reloadWithLeague()" name="league" id="league" required>
 	        			<option value=""></option>
-	        			<option {{ get('league') == 344 ? 'selected' : '' }} value="344">Liga Bolivia</option>
-	        			<option {{ get('league') == 964 ? 'selected' : '' }} value="964">Copa Bolivia</option>
+	        			<option {{ get('league') == 'd9kukruep5g7fthaknhbo2k2c' ? 'selected' : '' }} value="d9kukruep5g7fthaknhbo2k2c">Liga Bolivia</option>
+	        			<option {{ get('league') == 'acjvtl7xxvcbcz107c8lieqz8' ? 'selected' : '' }} value="acjvtl7xxvcbcz107c8lieqz8">Copa Bolivia</option>
 	        		</select>
 		        </div>
 
@@ -43,27 +43,15 @@
 		        @endif
 
 		        @if(! empty($matches) && get('type') != 'fixture' && get('type') != 'standings')
-		        	@if(get('league') == 344)
-			        	<div @change="reloadWithMatch()" class="text-black mt-6" id="match-container">
-				        	<label class="inline-block w-32" for="match">Partido</label>
-				        	<select class="text-dark" name="fixture" id="match" required>
-			        			<option value=""></option>
-			        			@foreach($matches as $match)
-			        				<option {{ get('fixture') == $match->matchInfo->id ? 'selected' : '' }} value="{{ $match->matchInfo->id }}">{{ $match->matchInfo->description }}</option>
-			        			@endforeach
-			        		</select>
-				        </div>
-			        @else
-			        	<div class="mt-6" id="match-container">
-				        	<label class="inline-block text-black w-32" for="match">Partido</label>
-				        	<select class="text-dark" name="fixture" id="match" required>
-			        			<option value=""></option>
-			        			@foreach($matches as $match)
-			        				<option {{ get('fixture') == $match->fixture->id ? 'selected' : '' }} value="{{ $match->fixture->id }}">{{ $match->teams->home->name . ' vs ' . $match->teams->away->name }}</option>
-			        			@endforeach
-			        		</select>
-				        </div>
-			        @endif
+		        	<div @change="reloadWithMatch()" class="text-black mt-6" id="match-container">
+			        	<label class="inline-block w-32" for="match">Partido</label>
+			        	<select class="text-dark" name="fixture" id="match" required>
+		        			<option value=""></option>
+		        			@foreach($matches as $match)
+		        				<option {{ get('fixture') == $match->matchInfo->id ? 'selected' : '' }} value="{{ $match->matchInfo->id }}">{{ $match->matchInfo->contestant[0]->name . ' vs ' . $match->matchInfo->contestant[1]->name }}</option>
+		        			@endforeach
+		        		</select>
+			        </div>
 		        @endif
 
 		        @if(get('fixture') && get('type') == 'playerStats')

@@ -31,12 +31,12 @@ class ExportController extends Controller
         $matches = [];
         $players = [];
 
-        $season = get('league') == 344 || get('league') == 964 ? '2023' : '2022';
-
         if (get('league') && get('type') != 'standings') {
+            $league = get('league');
+
             $response = http()
                 ->withToken($this->token)
-                ->get("https://api.performfeeds.com/soccerdata/match/$this->outletKey?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000");
+                ->get("https://api.performfeeds.com/soccerdata/match/$this->outletKey?tmcl=$league&live=yes&_fmt=json&_rt=b&_pgSz=1000");
 
             foreach (json($response->body())->match as $match) {
                 $weeks[] = $match->matchInfo->week;
@@ -52,28 +52,13 @@ class ExportController extends Controller
         }
 
         if (get('round')) {
+            $week = str_replace('Jornada ', '', get('round'));
+
             $response = http()
-                ->withHeaders([
-                    'x-rapidapi-host' => 'v3.football.api-sports.io',
-                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-                ])
-                ->get('https://v3.football.api-sports.io/fixtures', [
-                    'league' => request('league'),
-                    'season' => $season,
-                    'round' => get('round')
-                ]);
+                ->withToken($this->token)
+                ->get('https://api.performfeeds.com/soccerdata/match/' . $this->outletKey . '?tmcl=' . get('league') . '&live=yes&_fmt=json&_rt=b&_pgSz=1000&week=' . $week);
 
-            $matches = json($response->body())->response;
-
-            if (get('league') == 344) {
-                $week = str_replace('Jornada ', '', get('round'));
-
-                $response = http()
-                    ->withToken($this->token)
-                    ->get('https://api.performfeeds.com/soccerdata/match/' . $this->outletKey . '?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000&week=' . $week);
-
-                $matches = json($response->body())->match;
-            }
+            $matches = json($response->body())->match;
         }
 
         if (get('type') == 'playerStats' && get('fixture')) {
@@ -105,16 +90,10 @@ class ExportController extends Controller
 
     public function standings($league)
     {
-        if ($league == '344') {
-            $tournamentCalendarId = 'd9kukruep5g7fthaknhbo2k2c';
-        }
-
-        if ($league == '964') {
-            $tournamentCalendarId = 'acjvtl7xxvcbcz107c8lieqz8';
-
+        if ($league == 'acjvtl7xxvcbcz107c8lieqz8') {
             $response = http()
                 ->withToken($this->token)
-                ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
+                ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $league . '&_fmt=json&_rt=b');
 
             $response = json($response->body())->stage[0]->division;
 
@@ -140,7 +119,7 @@ class ExportController extends Controller
 
         $response = http()
             ->withToken($this->token)
-            ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $tournamentCalendarId . '&_fmt=json&_rt=b');
+            ->get('https://api.performfeeds.com/soccerdata/standings/' . $this->outletKey . '?live=yes&tmcl=' . $league . '&_fmt=json&_rt=b');
 
         $response = json($response->body())->stage[0]->division[0]->ranking;
 
@@ -160,24 +139,22 @@ class ExportController extends Controller
 
     public function fixture($league, $round)
     {
-        $season = $league == 344 || $league == 964 ? '2023' : '2022';
-
         $week = str_replace('Jornada ', '', $round);
 
         $response = http()
             ->withToken($this->token)
-            ->get('https://api.performfeeds.com/soccerdata/match/' . $this->outletKey . '?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000&week=' . $week);
+            ->get('https://api.performfeeds.com/soccerdata/match/' . $this->outletKey . '?tmcl=' . $league . '&live=yes&_fmt=json&_rt=b&_pgSz=1000&week=' . $week);
 
         $response = json($response->body());
 
         $i = 0;
 
         foreach ($response->match as $item) {
-            $data[$i]['local'] = explode(' vs ', $item->matchInfo->description)[0];
+            $data[$i]['local'] = $item->matchInfo->contestant[0]->name;
             $data[$i]['date'] = (new DateTime($item->matchInfo->localDate))->format('d-M');
             $data[$i]['datetime'] = (new DateTime($item->matchInfo->localDate))->format('Y-m-d H:i:s');
             $data[$i]['time'] = ((new DateTime($item->matchInfo->localTime))->modify('-4hour'))->format('H:i');
-            $data[$i]['away'] = explode(' vs ', $item->matchInfo->description)[1];
+            $data[$i]['away'] = $item->matchInfo->contestant[1]->name;
             
             if ($item->liveData->matchDetails->matchStatus != 'Fixture') {
                 $result = $item->liveData->matchDetails->scores->total->home . '-' . $item->liveData->matchDetails->scores->total->away;
@@ -195,98 +172,50 @@ class ExportController extends Controller
 
     public function lineups($fixture)
     {
-        if (get('bolivia')) {
-            $response = http()
-                ->withToken($this->token)
-                ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
 
-            $response = json($response->body());
+        $response = json($response->body());
 
-            $data['local']['team'] = $response->matchInfo->contestant[0]->shortName;
-            $data['local']['formation'] = $response->liveData->lineUp[0]->formationUsed;
+        $data['local']['team'] = $response->matchInfo->contestant[0]->name;
+        $data['local']['formation'] = $response->liveData->lineUp[0]->formationUsed;
 
-            $j = 0;
+        $j = 0;
 
-            for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
-                if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
-                    $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                    $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
-                } else {
-                    $data['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                    $data['local']['substitutes'][$j]['name'] = $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
-                    $j++;
-                }
+        for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
+            if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
+                $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
+            } else {
+                $data['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                $data['local']['substitutes'][$j]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
+                $j++;
             }
-
-            $data['local']['coach'] = $response->liveData->lineUp[0]->teamOfficial->firstName . ' ' . $response->liveData->lineUp[0]->teamOfficial->lastName;
-
-            $data['away']['team'] = $response->matchInfo->contestant[1]->shortName;
-            $data['away']['formation'] = $response->liveData->lineUp[1]->formationUsed;
-
-            $j = 0;
-
-            for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
-                if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
-                    $data['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                    $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
-                } else {
-                    $data['away']['substitutes'][$j]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                    $data['away']['substitutes'][$j]['name'] = $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
-                    $j++;
-                }
-            }
-
-            $data['away']['coach'] = $response->liveData->lineUp[1]->teamOfficial->firstName . ' ' . $response->liveData->lineUp[1]->teamOfficial->lastName;
-
-            $array = [count($data['away']['substitutes']), count($data['local']['substitutes'])];
-            $max = max($array);
-
-        } else {
-            $response = http()
-                ->withHeaders([
-                    'x-rapidapi-host' => 'v3.football.api-sports.io',
-                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-                ])
-                ->get('https://v3.football.api-sports.io/fixtures/lineups', [
-                    'fixture' => $fixture
-                ]);
-
-            $response = json($response->body())->response;
-
-            $data['local']['team'] = $response[0]->team->name;
-            $data['local']['formation'] = $response[0]->formation;
-
-            for ($i = 0; $i <= 10; $i++) { 
-                $data['local']['startXI'][$i]['number'] = $response[0]->startXI[$i]->player->number;
-                $data['local']['startXI'][$i]['name'] = $response[0]->startXI[$i]->player->name;
-            }
-
-            for ($i = 0; $i < count($response[0]->substitutes); $i++) {
-                $data['local']['substitutes'][$i]['number'] = $response[0]->substitutes[$i]->player->number;
-                $data['local']['substitutes'][$i]['name'] = $response[0]->substitutes[$i]->player->name;
-            }
-
-            $data['local']['coach'] = $response[0]->coach->name;
-
-            $data['away']['team'] = $response[1]->team->name;
-            $data['away']['formation'] = $response[1]->formation;
-
-            for ($i = 0; $i <= 10; $i++) { 
-                $data['away']['startXI'][$i]['number'] = $response[1]->startXI[$i]->player->number;
-                $data['away']['startXI'][$i]['name'] = $response[1]->startXI[$i]->player->name;
-            }
-
-            for ($i = 0; $i < count($response[1]->substitutes); $i++) {
-                $data['away']['substitutes'][$i]['number'] = $response[1]->substitutes[$i]->player->number;
-                $data['away']['substitutes'][$i]['name'] = $response[1]->substitutes[$i]->player->name;
-            }
-
-            $data['away']['coach'] = $response[1]->coach->name;
-
-            $array = [count($data['away']['substitutes']), count($data['local']['substitutes'])];
-            $max = max($array);         
         }
 
+        $data['local']['coach'] = $response->liveData->lineUp[0]->teamOfficial->shortFirstName . ' ' . $response->liveData->lineUp[0]->teamOfficial->shortLastName;
+
+        $data['away']['team'] = $response->matchInfo->contestant[1]->name;
+        $data['away']['formation'] = $response->liveData->lineUp[1]->formationUsed;
+
+        $j = 0;
+
+        for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
+            if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
+                $data['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
+                $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName;
+            } else {
+                $data['away']['substitutes'][$j]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
+                $data['away']['substitutes'][$j]['name'] = $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName;
+                $j++;
+            }
+        }
+
+        $data['away']['coach'] = $response->liveData->lineUp[1]->teamOfficial->shortFirstName . ' ' . $response->liveData->lineUp[1]->teamOfficial->shortLastName;
+
+        $array = [count($data['away']['substitutes']), count($data['local']['substitutes'])];
+        $max = max($array);
 
         return view('export.lineups', compact('data', 'max'));
     }
@@ -294,183 +223,158 @@ class ExportController extends Controller
     public function stats($fixture = '')
     {
         $response = http()
-            ->withHeaders([
-                'x-rapidapi-host' => 'v3.football.api-sports.io',
-                'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-            ])
-            ->get('https://v3.football.api-sports.io/fixtures/statistics', [
-                'fixture' => $fixture
-            ]);
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
 
-        $response = json($response->body())->response;
+        $home = json($response->body())->matchInfo->contestant[0]->name;
+        $away = json($response->body())->matchInfo->contestant[1]->name;
 
-        foreach ($response as $item) {
-            $data[$item->team->name]['corners'] = $item->statistics[7]->value ?? 0;
-            $data[$item->team->name]['shots'] = $item->statistics[2]->value ?? 0;
-            $data[$item->team->name]['shots_on_goal'] = $item->statistics[4]->value ?? 0;
-            $data[$item->team->name]['fouls'] = $item->statistics[6]->value ?? 0;
-            $data[$item->team->name]['offside'] = $item->statistics[8]->value ?? 0;
-            $data[$item->team->name]['possession'] = $item->statistics[9]->value;
-            $data[$item->team->name]['yellows'] = $item->statistics[10]->value ?? 0;
-            $data[$item->team->name]['reds'] = $item->statistics[11]->value ?? 0;
-            $data[$item->team->name]['expected_goals'] = $item->statistics[16]->value ?? '-';
+        $response = json($response->body())->liveData;
+
+        $data[$home]['contestantId'] = $response->lineUp[0]->contestantId;
+
+        foreach ($response->lineUp[0]->stat as $stat) {
+            if ($stat->type == 'cornerTaken') {
+                $data[$home]['corners'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalScoringAtt') {
+                $data[$home]['shots'] = $stat->value;
+            }
+
+            if ($stat->type == 'ontargetScoringAtt') {
+                $data[$home]['shots_on_goal'] = $stat->value;
+            }
+
+            if ($stat->type == 'fkFoulLost') {
+                $data[$home]['fouls'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalOffside') {
+                $data[$home]['offside'] = $stat->value;
+            }
+
+            if ($stat->type == 'possessionPercentage') {
+                $data[$home]['possession'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalYellowCard') {
+                $data[$home]['yellows'] = $stat->value;
+            }
+
+            if ($stat->type == 'secondYellow') {
+                $data[$home]['second_yellow'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalRedCard') {
+                $data[$home]['reds'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalPass') {
+                $data[$home]['passes'] = $stat->value;
+            }
+
+            if ($stat->type == 'accuratePass') {
+                $data[$home]['successfulPasses'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalFinalThirdPasses') {
+                $data[$home]['passesLastThird'] = $stat->value;
+            }
+
+            if ($stat->type == 'accuratePass') {
+                $data[$home]['accuratePass'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalPass') {
+                $data[$home]['totalPass'] = $stat->value;
+            }
+
+            if (isset($data[$home]['accuratePass']) && isset($data[$home]['totalPass'])) {
+                $data[$home]['precision'] = number_format(($data[$home]['accuratePass'] / $data[$home]['totalPass']) * 100, 2);
+            }
         }
 
-        if (get('bolivia')) {
-            $response = http()
-                ->withToken($this->token)
-                ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+        $data[$away]['contestantId'] = $response->lineUp[1]->contestantId;
 
-            $home = explode(' vs ', json($response->body())->matchInfo->description)[0];
-            $away = explode(' vs ', json($response->body())->matchInfo->description)[1];
-
-            $response = json($response->body())->liveData;
-
-            $data[$home]['contestantId'] = $response->lineUp[0]->contestantId;
-
-            foreach ($response->lineUp[0]->stat as $stat) {
-                if ($stat->type == 'cornerTaken') {
-                    $data[$home]['corners'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalScoringAtt') {
-                    $data[$home]['shots'] = $stat->value;
-                }
-
-                if ($stat->type == 'ontargetScoringAtt') {
-                    $data[$home]['shots_on_goal'] = $stat->value;
-                }
-
-                if ($stat->type == 'fkFoulLost') {
-                    $data[$home]['fouls'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalOffside') {
-                    $data[$home]['offside'] = $stat->value;
-                }
-
-                if ($stat->type == 'possessionPercentage') {
-                    $data[$home]['possession'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalYellowCard') {
-                    $data[$home]['yellows'] = $stat->value;
-                }
-
-                if ($stat->type == 'secondYellow') {
-                    $data[$home]['second_yellow'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalRedCard') {
-                    $data[$home]['reds'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalPass') {
-                    $data[$home]['passes'] = $stat->value;
-                }
-
-                if ($stat->type == 'accuratePass') {
-                    $data[$home]['successfulPasses'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalFinalThirdPasses') {
-                    $data[$home]['passesLastThird'] = $stat->value;
-                }
-
-                if ($stat->type == 'accuratePass') {
-                    $data[$home]['accuratePass'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalPass') {
-                    $data[$home]['totalPass'] = $stat->value;
-                }
-
-                if (isset($data[$home]['accuratePass']) && isset($data[$home]['totalPass'])) {
-                    $data[$home]['precision'] = number_format(($data[$home]['accuratePass'] / $data[$home]['totalPass']) * 100, 2);
-                }
+        foreach ($response->lineUp[1]->stat as $stat) {
+            if ($stat->type == 'cornerTaken') {
+                $data[$away]['corners'] = $stat->value;
             }
 
-            $data[$away]['contestantId'] = $response->lineUp[1]->contestantId;
-
-            foreach ($response->lineUp[1]->stat as $stat) {
-                if ($stat->type == 'cornerTaken') {
-                    $data[$away]['corners'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalScoringAtt') {
-                    $data[$away]['shots'] = $stat->value;
-                }
-
-                if ($stat->type == 'ontargetScoringAtt') {
-                    $data[$away]['shots_on_goal'] = $stat->value;
-                }
-
-                if ($stat->type == 'fkFoulLost') {
-                    $data[$away]['fouls'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalOffside') {
-                    $data[$away]['offside'] = $stat->value;
-                }
-
-                if ($stat->type == 'possessionPercentage') {
-                    $data[$away]['possession'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalYellowCard') {
-                    $data[$away]['yellows'] = $stat->value;
-                }
-
-                if ($stat->type == 'secondYellow') {
-                    $data[$away]['second_yellow'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalRedCard') {
-                    $data[$away]['reds'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalPass') {
-                    $data[$away]['passes'] = $stat->value;
-                }
-
-                if ($stat->type == 'accuratePass') {
-                    $data[$away]['successfulPasses'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalFinalThirdPasses') {
-                    $data[$away]['passesLastThird'] = $stat->value;
-                }
-
-                if ($stat->type == 'accuratePass') {
-                    $data[$away]['accuratePass'] = $stat->value;
-                }
-
-                if ($stat->type == 'totalPass') {
-                    $data[$away]['totalPass'] = $stat->value;
-                }
-
-                if (isset($data[$away]['accuratePass']) && isset($data[$away]['totalPass'])) {
-                    $data[$away]['precision'] = number_format(($data[$away]['accuratePass'] / $data[$away]['totalPass']) * 100, 2);
-                }
+            if ($stat->type == 'totalScoringAtt') {
+                $data[$away]['shots'] = $stat->value;
             }
 
-            $response = http()
-                ->withToken($this->token)
-                ->get('https://api.performfeeds.com/soccerdata/matchexpectedgoals/' . $this->outletKey . '/' . $fixture . '?_rt=b&_fmt=json');
-
-            $response = json($response->body())->liveData;
-
-            foreach ($response->lineUp[0]->stat as $stat) {
-                if ($stat->type == 'expectedGoals') {
-                    $data[$home]['expected_goals'] = $stat->value;
-                }              
+            if ($stat->type == 'ontargetScoringAtt') {
+                $data[$away]['shots_on_goal'] = $stat->value;
             }
 
-            foreach ($response->lineUp[1]->stat as $stat) {
-                if ($stat->type == 'expectedGoals') {
-                    $data[$away]['expected_goals'] = $stat->value;
-                }              
+            if ($stat->type == 'fkFoulLost') {
+                $data[$away]['fouls'] = $stat->value;
             }
+
+            if ($stat->type == 'totalOffside') {
+                $data[$away]['offside'] = $stat->value;
+            }
+
+            if ($stat->type == 'possessionPercentage') {
+                $data[$away]['possession'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalYellowCard') {
+                $data[$away]['yellows'] = $stat->value;
+            }
+
+            if ($stat->type == 'secondYellow') {
+                $data[$away]['second_yellow'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalRedCard') {
+                $data[$away]['reds'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalPass') {
+                $data[$away]['passes'] = $stat->value;
+            }
+
+            if ($stat->type == 'accuratePass') {
+                $data[$away]['successfulPasses'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalFinalThirdPasses') {
+                $data[$away]['passesLastThird'] = $stat->value;
+            }
+
+            if ($stat->type == 'accuratePass') {
+                $data[$away]['accuratePass'] = $stat->value;
+            }
+
+            if ($stat->type == 'totalPass') {
+                $data[$away]['totalPass'] = $stat->value;
+            }
+
+            if (isset($data[$away]['accuratePass']) && isset($data[$away]['totalPass'])) {
+                $data[$away]['precision'] = number_format(($data[$away]['accuratePass'] / $data[$away]['totalPass']) * 100, 2);
+            }
+        }
+
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchexpectedgoals/' . $this->outletKey . '/' . $fixture . '?_rt=b&_fmt=json');
+
+        $response = json($response->body())->liveData;
+
+        foreach ($response->lineUp[0]->stat as $stat) {
+            if ($stat->type == 'expectedGoals') {
+                $data[$home]['expected_goals'] = $stat->value;
+            }              
+        }
+
+        foreach ($response->lineUp[1]->stat as $stat) {
+            if ($stat->type == 'expectedGoals') {
+                $data[$away]['expected_goals'] = $stat->value;
+            }              
         }
 
         if (! isset($data)) {

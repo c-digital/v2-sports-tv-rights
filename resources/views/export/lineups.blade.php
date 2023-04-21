@@ -44,19 +44,19 @@
 	@for($i = 0; $i <= 10; $i++)
 		<tr>
 			<td>{{ $data['local']['startXI'][$i]['number'] }}</td>
-			<td>{{ formatName($data['local']['startXI'][$i]['name']) }}</td>
+			<td>{{ $data['local']['startXI'][$i]['name'] }}</td>
 			<td></td>
 			<td>{{ $data['away']['startXI'][$i]['number'] }}</td>
-			<td>{{ formatName($data['away']['startXI'][$i]['name']) }}</td>
+			<td>{{ $data['away']['startXI'][$i]['name'] }}</td>
 		</tr>
 	@endfor
 
 	<tr>
 		<th>Entrenador</th>
-		<td>{{ isset($data['local']['coach']) ? formatName($data['local']['coach']) : '' }}</td>
+		<td>{{ isset($data['local']['coach']) ? $data['local']['coach'] : '' }}</td>
 		<td></td>
 		<th>Entrenador</th>
-		<td>{{ isset($data['away']['coach']) ? formatName($data['away']['coach']) : '' }}</td>
+		<td>{{ isset($data['away']['coach']) ? $data['away']['coach'] : '' }}</td>
 	</tr>
 
 	<tr>
@@ -76,10 +76,10 @@
 	@for($i = 0; $i <= $max - 1; $i++)
 		<tr>
 			<td>{{ $data['local']['substitutes'][$i]['number'] ?? '' }}</td>
-			<td>{{ isset($data['local']['substitutes'][$i]['name']) ? formatName($data['local']['substitutes'][$i]['name']) : '' }}</td>
+			<td>{{ isset($data['local']['substitutes'][$i]['name']) ? $data['local']['substitutes'][$i]['name'] : '' }}</td>
 			<td></td>
 			<td>{{ $data['away']['substitutes'][$i]['number'] ?? '' }}</td>
-			<td>{{ isset($data['away']['substitutes'][$i]['name']) ? formatName($data['away']['substitutes'][$i]['name']) : '' }}</td>
+			<td>{{ isset($data['away']['substitutes'][$i]['name']) ? $data['away']['substitutes'][$i]['name'] : '' }}</td>
 		</tr>
 	@endfor
 </table>
