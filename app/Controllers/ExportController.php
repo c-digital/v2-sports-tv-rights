@@ -185,13 +185,13 @@ class ExportController extends Controller
 
         for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
             if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
-                $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
-            } else {
-                $data['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                $data['local']['substitutes'][$j]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
-                $j++;
-            }
+                    $data['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                    $data['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
+                } else {
+                    $data['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                    $data['local']['substitutes'][$j]['name'] = isset($response->liveData->lineUp[0]->player[$i]->shortFirstName) ? $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName : $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
+                    $j++;
+                }  
         }
 
         $data['local']['coach'] = $response->liveData->lineUp[0]->teamOfficial->shortFirstName . ' ' . $response->liveData->lineUp[0]->teamOfficial->shortLastName;

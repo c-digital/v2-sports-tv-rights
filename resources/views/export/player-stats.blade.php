@@ -15,7 +15,7 @@
 
 <table>
 	<tr>
-		<th colspan="2">{{ $data->matchName }}</th>
+		<th colspan="2">{{ $data->shortFirstName . ' ' . $data->shortLastName }}</th>
 	</tr>
 
 	<tr>
