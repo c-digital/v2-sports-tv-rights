@@ -151,12 +151,15 @@ class ExportController extends Controller
 
         foreach ($response->match as $item) {
             $data[$i]['local'] = $item->matchInfo->contestant[0]->name;
-            $data[$i]['date'] = (new DateTime($item->matchInfo->localDate))->format('d-M');
-            $data[$i]['datetime'] = (new DateTime($item->matchInfo->localDate))->format('Y-m-d H:i:s');
-            $data[$i]['time'] = ((new DateTime($item->matchInfo->localTime))->modify('-4hour'))->format('H:i');
+            $data[$i]['date'] = (new DateTime($item->matchInfo->date))->format('d-M');
+            $data[$i]['datetime'] = (new DateTime($item->matchInfo->date))->format('Y-m-d');
+            $data[$i]['time'] = ((new DateTime($item->matchInfo->time))->modify('-4hour'))->format('H:i');
+
+            $data[$i]['datetime'] = $data[$i]['datetime'] . ' ' . $data[$i]['time'] . ':00';
+
             $data[$i]['away'] = $item->matchInfo->contestant[1]->name;
-            
-            if ($item->liveData->matchDetails->matchStatus != 'Fixture') {
+
+            if ($item->liveData->matchDetails->matchStatus != 'Fixture' && $item->liveData->matchDetails->matchStatus != 'Postponed') {
                 $result = $item->liveData->matchDetails->scores->total->home . '-' . $item->liveData->matchDetails->scores->total->away;
 
                 $data[$i]['result'] = $result;
@@ -204,10 +207,10 @@ class ExportController extends Controller
         for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
             if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
                 $data['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                $data['away']['startXI'][$i]['name'] = $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName;
+                $data['away']['startXI'][$i]['name'] = isset($response->liveData->lineUp[1]->player[$i]->shortFirstName) ? $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName : $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
             } else {
                 $data['away']['substitutes'][$j]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
-                $data['away']['substitutes'][$j]['name'] = $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName;
+                $data['away']['substitutes'][$j]['name'] = isset($response->liveData->lineUp[1]->player[$i]->shortFirstName) ? $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName : $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
                 $j++;
             }
         }
@@ -489,6 +492,10 @@ class ExportController extends Controller
         $response = http()
             ->withToken($this->token)
             ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+
+        if (! isset(json($response->body())->liveData->matchDetailsExtra)) {
+            return 'No hay info para este partido';
+        }
 
         $referees = json($response->body())->liveData->matchDetailsExtra->matchOfficial;
 

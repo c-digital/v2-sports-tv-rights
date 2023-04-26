@@ -46,6 +46,14 @@
             Estadísticas de competición
         </a>
 
+        <a href="{{ '/match/penalty-history?' . queryString() }}" class="match-btn text-center items-center mr-1 p-3 appearance-none bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-black active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+            Historial de penaltis
+        </a>
+
+        <a href="{{ '/match/season-teams-stats?' . queryString() }}" class="match-btn text-center items-center mr-1 p-3 appearance-none bg-black border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-black active:bg-black focus:outline-none focus:border-black focus:ring focus:ring-gray-300 disabled:opacity-25 transition">
+            Estadística de los equipos en la temporada
+        </a>
+
         <div class="bg-white border rounded shadow p-5 mt-5 text-lg">
             <opta-widget
                 widget="goal_replay"

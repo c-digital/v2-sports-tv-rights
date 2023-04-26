@@ -95,4 +95,20 @@ class MatchController extends Controller
     {
         return view('matches.competition-stats');
     }
+
+    /**
+     * Penalty history page.
+     */
+    public function penaltyHistory(): View
+    {
+        return view('matches.penalty-history');
+    }
+
+    /**
+     * Season teams stats page.
+     */
+    public function seasonTeamsStats(): View
+    {
+        return view('matches.season-teams-stats');
+    }
 }

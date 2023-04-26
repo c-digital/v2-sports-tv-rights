@@ -32,6 +32,8 @@ $route->get('/match/dynamic', [MatchController::class, 'dynamic']);
 $route->get('/match/compare', [MatchController::class, 'compare']);
 $route->get('/match/referees', [MatchController::class, 'referees']);
 $route->get('/match/competition-stats', [MatchController::class, 'competitionStats']);
+$route->get('/match/penalty-history', [MatchController::class, 'penaltyHistory']);
+$route->get('/match/season-teams-stats', [MatchController::class, 'seasonTeamsStats']);
 
 $route->get('/export', [ExportController::class, 'index']);
 $route->post('/export', [ExportController::class, 'export']);

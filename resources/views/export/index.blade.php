@@ -11,8 +11,8 @@
 		        	<label class="inline-block w-32 text-black" for="league">Competición</label>
 		        	<select class="text-dark" @change="reloadWithLeague()" name="league" id="league" required>
 	        			<option value=""></option>
-	        			<option {{ get('league') == 'd9kukruep5g7fthaknhbo2k2c' ? 'selected' : '' }} value="d9kukruep5g7fthaknhbo2k2c">Liga Bolivia</option>
-	        			<option {{ get('league') == 'acjvtl7xxvcbcz107c8lieqz8' ? 'selected' : '' }} value="acjvtl7xxvcbcz107c8lieqz8">Copa Bolivia</option>
+	        			<option {{ get('league') == 'd9kukruep5g7fthaknhbo2k2c' ? 'selected' : '' }} value="d9kukruep5g7fthaknhbo2k2c">Liga Tigo FBF</option>
+	        			<option {{ get('league') == 'acjvtl7xxvcbcz107c8lieqz8' ? 'selected' : '' }} value="acjvtl7xxvcbcz107c8lieqz8">Copa Tigo FBF</option>
 	        		</select>
 		        </div>
 
