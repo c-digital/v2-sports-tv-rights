@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use DateTime;
 use View;
+use Exception;
 
 class ExportController extends Controller
 {
@@ -151,12 +152,18 @@ class ExportController extends Controller
 
         foreach ($response->match as $item) {
             $data[$i]['local'] = $item->matchInfo->contestant[0]->name;
-            $data[$i]['date'] = (new DateTime($item->matchInfo->date))->format('d-M');
-            $data[$i]['datetime'] = (new DateTime($item->matchInfo->date))->format('Y-m-d');
-            $data[$i]['time'] = ((new DateTime($item->matchInfo->time))->modify('-4hour'))->format('H:i');
 
-            $data[$i]['datetime'] = $data[$i]['datetime'] . ' ' . $data[$i]['time'] . ':00';
-
+            try {
+                $data[$i]['date'] = (new DateTime($item->matchInfo->localDate))->format('d-M');
+                $data[$i]['datetime'] = (new DateTime($item->matchInfo->localDate . ' ' . $item->matchInfo->localTime))->format('Y-m-d H:i:s');
+                $data[$i]['time'] = (new DateTime($item->matchInfo->localTime))->format('H:i');
+            }
+            catch (Exception $exception) {
+                $data[$i]['date'] = (new DateTime($item->matchInfo->date))->format('d-M');
+                $data[$i]['datetime'] = (new DateTime($item->matchInfo->date . ' ' . $item->matchInfo->time))->format('Y-m-d H:i:s');
+                $data[$i]['time'] = (new DateTime($item->matchInfo->time))->format('H:i');  
+            }
+            
             $data[$i]['away'] = $item->matchInfo->contestant[1]->name;
 
             if ($item->liveData->matchDetails->matchStatus != 'Fixture' && $item->liveData->matchDetails->matchStatus != 'Postponed') {
