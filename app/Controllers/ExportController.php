@@ -399,83 +399,37 @@ class ExportController extends Controller
 
     public function score($fixture)
     {
-        if (get('bolivia')) {
-            $response = http()
-                ->withToken($this->token)
-                ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
 
-            $response = json($response->body());
+        $response = json($response->body());
 
-            $data['local']['team_id'] = $response->matchInfo->contestant[0]->id;
-            $data['local']['team'] = $response->matchInfo->contestant[0]->name;
-            $data['local']['logo'] = '';
+        $data['local']['team_id'] = $response->matchInfo->contestant[0]->id;
+        $data['local']['team'] = $response->matchInfo->contestant[0]->name;
+        $data['local']['logo'] = '';
 
-            $data['away']['team_id'] = $response->matchInfo->contestant[1]->id;
-            $data['away']['team'] = $response->matchInfo->contestant[1]->name;
-            $data['away']['logo'] = '';
+        $data['away']['team_id'] = $response->matchInfo->contestant[1]->id;
+        $data['away']['team'] = $response->matchInfo->contestant[1]->name;
+        $data['away']['logo'] = '';
 
-            $i = 0;
+        $i = 0;
 
-            foreach ($response->liveData->goal as $goal) {
-                $data['goals'][$i]['detail'] = '';
-                $data['goals'][$i]['player'] = $goal->scorerName;
-                $data['goals'][$i]['time'] = $goal->timeMin;
+        foreach ($response->liveData->goal as $goal) {
+            $data['goals'][$i]['detail'] = '';
+            $data['goals'][$i]['player'] = $goal->scorerName;
+            $data['goals'][$i]['time'] = $goal->timeMin;
 
-                if ($goal->contestantId == $response->matchInfo->contestant[0]->id) {
-                    $data['goals'][$i]['team'] = $response->matchInfo->contestant[0]->name;
-                }
-
-                if ($goal->contestantId == $response->matchInfo->contestant[1]->id) {
-                    $data['goals'][$i]['team'] = $response->matchInfo->contestant[1]->name;
-                }
-
-                $i++;
+            if ($goal->contestantId == $response->matchInfo->contestant[0]->id) {
+                $data['goals'][$i]['team'] = $response->matchInfo->contestant[0]->name;
             }
 
-        } else {
-            $response = http()
-                ->withHeaders([
-                    'x-rapidapi-host' => 'v3.football.api-sports.io',
-                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-                ])
-                ->get('https://v3.football.api-sports.io/fixtures/lineups', [
-                    'fixture' => $fixture
-                ]);
+            if ($goal->contestantId == $response->matchInfo->contestant[1]->id) {
+                $data['goals'][$i]['team'] = $response->matchInfo->contestant[1]->name;
+            }
 
-            $response = json($response->body())->response;
-
-            $data['local']['team_id'] = $response[0]->team->id;
-            $data['local']['team'] = $response[0]->team->name;
-            $data['local']['logo'] = $response[0]->team->logo;
-
-            $data['away']['team_id'] = $response[1]->team->id;
-            $data['away']['team'] = $response[1]->team->name;
-            $data['away']['logo'] = $response[1]->team->logo;
-
-            $response = http()
-                ->withHeaders([
-                    'x-rapidapi-host' => 'v3.football.api-sports.io',
-                    'x-rapidapi-key' => '76e449a048284c4ad2336531b8c06ab2'
-                ])
-                ->get('https://v3.football.api-sports.io/fixtures/events', [
-                    'fixture' => $fixture,
-                    'type' => 'Goal'
-                ]);
-
-            $response = json($response->body())->response;
-
-            $i = 0;
-
-            foreach ($response as $item) {
-                $data['goals'][$i]['detail'] = $item->detail;
-                $data['goals'][$i]['team'] = $item->team->name;
-                $data['goals'][$i]['player'] = $item->player->name;
-                $data['goals'][$i]['time'] = $item->time->elapsed;
-
-                $i++;
-            }            
+            $i++;
         }
-
 
         return view('export.score', compact('data'));
     }
