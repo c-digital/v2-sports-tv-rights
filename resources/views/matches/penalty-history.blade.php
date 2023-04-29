@@ -83,7 +83,7 @@
             	competition_naming="full"
             	team_naming="full"
             	player_naming="full"
-            	show_logo="true"
+            	show_logo="false"
             	show_title="true"
             	breakpoints="400"
             	sport="football">
