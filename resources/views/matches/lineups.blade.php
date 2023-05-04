@@ -64,7 +64,7 @@
                 orientation="horizontal"
                 side="both"
                 show_match_header="true"
-                show_crests="false"
+                show_crests="true"
                 show_pitch_crests="false"
                 show_team_formation="true"
                 show_score="true"

@@ -70,7 +70,7 @@
             	show_match_header="true"
             	show_score="true"
             	show_halftime_score="false"
-            	show_crests="false"
+            	show_crests="true"
             	show_team_formation="true"
             	show_competition_name="true"
             	show_date="true"

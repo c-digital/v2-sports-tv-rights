@@ -67,7 +67,7 @@
             	show_match_header="true"
             	show_score="true"
             	show_halftime_score="false"
-            	show_crests="false"
+            	show_crests="true"
             	show_competition_name="true"
             	graph_style="full"
             	show_date="false"
