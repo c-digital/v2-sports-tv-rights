@@ -265,7 +265,7 @@ class ExportController extends Controller
             }
 
             if ($stat->type == 'possessionPercentage') {
-                $data[$home]['possession'] = $stat->value;
+                $data[$home]['possession'] = number_format($stat->value, 0);;
             }
 
             if ($stat->type == 'totalYellowCard') {
@@ -329,7 +329,7 @@ class ExportController extends Controller
             }
 
             if ($stat->type == 'possessionPercentage') {
-                $data[$away]['possession'] = $stat->value;
+                $data[$away]['possession'] = number_format($stat->value, 0);
             }
 
             if ($stat->type == 'totalYellowCard') {

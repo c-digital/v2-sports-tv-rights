@@ -43,7 +43,8 @@
                 show_logo="false"
                 show_title="true"
                 breakpoints="400"
-                sport="football">
+                sport="football"
+                team_link="/match/season-teams-stats?">
             </opta-widget>
         </div>
     </div>
