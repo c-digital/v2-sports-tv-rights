@@ -19,9 +19,11 @@ $route->auth();
 // Dashboard
 $route->get('/dashboard', [DashboardController::class, 'index']);
 
+// Widgets
 $route->get('/bolivia/liga', [BoliviaController::class, 'liga']);
 $route->get('/bolivia/copa', [BoliviaController::class, 'copa']);
 
+// Match
 $route->get('/match/summary', [MatchController::class, 'summary']);
 $route->get('/match/lineups', [MatchController::class, 'lineups']);
 $route->get('/match/stats', [MatchController::class, 'stats']);
@@ -35,6 +37,10 @@ $route->get('/match/competition-stats', [MatchController::class, 'competitionSta
 $route->get('/match/penalty-history', [MatchController::class, 'penaltyHistory']);
 $route->get('/match/season-teams-stats', [MatchController::class, 'seasonTeamsStats']);
 
+// Drag and drop
+$route->get('/match/drag-drop', [DragDropController::class, 'index']);
+
+// Export
 $route->get('/export', [ExportController::class, 'index']);
 $route->post('/export', [ExportController::class, 'export']);
 
@@ -48,24 +54,3 @@ $route->get('/export/playerStats/{fixture}/{player}', [ExportController::class, 
 
 // Users
 $route->resource('/dashboard/users', UserController::class);
-
-$route->get('/test', function () {
-	$token = token();
-	$outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
-
-	$response = http()
-        ->withToken($token)
-        ->get("https://api.performfeeds.com/soccerdata/match/$outletKey?tmcl=d9kukruep5g7fthaknhbo2k2c&live=yes&_fmt=json&_rt=b&_pgSz=1000");
-
-	foreach (json($response->body())->match as $match) {
-		$weeks[] = $match->matchInfo->week;
-	}
-
-	$weeks = array_unique($weeks);
-
-	foreach ($weeks as $week) {
-		$rounds[] = 'Jornada ' . $week;
-	}
-
-	sort($rounds, SORT_NATURAL);
-});

@@ -2,7 +2,7 @@
 	<div class="w-full p-7">
         <div class="flex justify-between">
             <div>
-                <h1 class="text-3xl mb-4">{{ 'Liga Tigo FBF' }}</h1>
+                <h1 class="soulcraftg text-3xl mb-4 text-[#ffc400]">{{ 'Liga Tigo FBF' }}</h1>
             </div>
 
             <div>

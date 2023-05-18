@@ -21,24 +21,21 @@
 <link rel="stylesheet" href="https://secure.widget.cloud.opta.net/v3/css/v3.all.opta-widgets.css">
 
 <style>
+    @font-face {
+        font-family: soulcraftgx;
+        src: url('https://api-v2.sportstvrights.com/resources/assets/fonts/soulcraftgx.ttf');
+    }
+
+    .soulcraftg {
+        font-family: soulcraftgx;
+    }
+
     .wg_modal {
         z-index: 100 !important;
     }
 
     .Opta .Opta-H2, .Opta h2 {
         background-color: #132141 !important;
-    }
-
-    .match-btn, .match-btn:hover, .match-btn:focus {
-        background-color: #132141 !important;
-        border-color: #132141 !important;
-    }
-
-    body {
-        background: url('{{ asset('img/fondo.jpg')  }}');
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
     }
 
     .bg-blue-tigo, .btn-blue-tigo {
@@ -56,16 +53,67 @@
     th, td {
         color: black !important;
     }
+
+    @if(strpos($_SERVER['REQUEST_URI'], 'copa') || get('competition') == 593)
+        nav {
+            background-image: url('https://api-v2.sportstvrights.com/resources/assets/img/navbar-copa.png');
+            background-size: 100% 100%;
+        }
+
+        body {
+            background: url('{{ asset('img/fondo-copa.jpg') }}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .match-btn, .match-btn:hover, .match-btn:focus {
+            background-color: #ffbe00 !important;
+            border-color: #ffbe00 !important;
+            font-family: soulcraftgx;
+        }
+
+    @elseif(strpos($_SERVER['REQUEST_URI'], 'liga') || get('competition') == 592)
+        nav {
+            background-image: url('https://api-v2.sportstvrights.com/resources/assets/img/navbar-liga.png');
+            background-size: 100% 100%;
+        }
+
+        body {
+            background: url('{{ asset('img/fondo-liga.jpg') }}');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        .match-btn, .match-btn:hover, .match-btn:focus {
+            background-color: #132141 !important;
+            border-color: #132141 !important;
+            font-family: soulcraftgx;
+        }
+
+    @else
+        body {
+            background: url('{{ asset('img/fondo.jpg') }}');
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+    @endif
 </style>
 
 </head>
 
 <body x-data="app()" class="bg-gray-100 font-sans leading-normal tracking-normal">
-    <nav class="bg-blue-tigo fixed w-full z-10 top-0 shadow">
+    <nav style="" class="bg-blue-tigo fixed w-full z-10 top-0 shadow">
         <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
             <div class="w-1/2 pl-2 md:pl-0">
                 <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href="/dashboard">
-                    <img class="w-1/3" src="{{ asset('img/logo-index.png') }}" alt="Logo">
+                    @if((strpos($_SERVER['REQUEST_URI'], 'copa') || get('competition') == 593) || (strpos($_SERVER['REQUEST_URI'], 'liga') || get('competition') == 592))
+                        <img class="w-1/3" src="{{ asset('img/transparente.png') }}" alt="Logo">
+                    @else
+                        <img class="w-1/3" src="{{ asset('img/logo-index.png') }}" alt="Logo">
+                    @endif
                 </a>
             </div>
 

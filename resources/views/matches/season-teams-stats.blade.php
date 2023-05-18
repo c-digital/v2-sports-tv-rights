@@ -1,8 +1,12 @@
 <x-template-dashboard active="bolivia.{{ get('competition') == '592' ? 'liga' : 'copa' }}">
     <div class="w-full p-7">
-        <h1 class="text-3xl mb-4">{{ get('competition') == '592' ? 'Liga Tigo FBF' : 'Copa Tigo FBF' }}</h1>
+        <h1 class="text-3xl mb-4 soulcraftg {{ get('competition') == '592' ? 'text-[#ffc400]' : 'text-[#ffbe00]' }}">
+            {{ get('competition') == '592' ? 'Liga Tigo FBF' : 'Copa Tigo FBF' }}
+        </h1>
 
         <x-alert></x-alert>
+
+        <x-match-nav></x-match-nav>
 
         <div class="bg-white border rounded shadow p-5 mt-5 text-lg">
             <opta-widget widget="season_team_stats"
