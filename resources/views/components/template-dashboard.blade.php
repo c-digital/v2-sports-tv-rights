@@ -18,7 +18,8 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<link rel="stylesheet" href="https://secure.widget.cloud.opta.net/v3/css/v3.all.opta-widgets.css">
+<link rel="stylesheet" href="{{ asset('css/v3.all.opta-widgets.css') }}">
+{{-- <link rel="stylesheet" href="https://secure.widget.cloud.opta.net/v3/css/v3.all.opta-widgets.css"> --}}
 
 <style>
     @font-face {
@@ -73,7 +74,7 @@
             font-family: soulcraftgx;
         }
 
-    @elseif(strpos($_SERVER['REQUEST_URI'], 'liga') || get('competition') == 592)
+    @else
         nav {
             background-image: url('https://api-v2.sportstvrights.com/resources/assets/img/navbar-liga.png');
             background-size: 100% 100%;
@@ -91,14 +92,6 @@
             border-color: #132141 !important;
             font-family: soulcraftgx;
         }
-
-    @else
-        body {
-            background: url('{{ asset('img/fondo.jpg') }}');
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
     @endif
 </style>
 
@@ -109,11 +102,7 @@
         <div class="w-full container mx-auto flex flex-wrap items-center mt-0 pt-3 pb-3 md:pb-0">
             <div class="w-1/2 pl-2 md:pl-0">
                 <a class="text-gray-900 text-base xl:text-xl no-underline hover:no-underline font-bold" href="/dashboard">
-                    @if((strpos($_SERVER['REQUEST_URI'], 'copa') || get('competition') == 593) || (strpos($_SERVER['REQUEST_URI'], 'liga') || get('competition') == 592))
-                        <img class="w-1/3" src="{{ asset('img/transparente.png') }}" alt="Logo">
-                    @else
-                        <img class="w-1/3" src="{{ asset('img/logo-index.png') }}" alt="Logo">
-                    @endif
+                    <img class="w-1/3" src="{{ asset('img/transparente.png') }}" alt="Logo">
                 </a>
             </div>
 
