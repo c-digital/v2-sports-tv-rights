@@ -27,6 +27,7 @@
 		        		<option {{ get('type') == 'playerStats' ? 'selected' : '' }} value="playerStats">Estadísticas por jugador</option>
 		        		<option {{ get('type') == 'heatMap' ? 'selected' : '' }} value="heatMap">Mapa de calor</option>
 		        		<option {{ get('type') == 'score' ? 'selected' : '' }} value="score">Score</option>
+		        		<option {{ get('type') == 'general' ? 'selected' : '' }} value="general">General</option>
 		        	</select>
 		        </div>
 

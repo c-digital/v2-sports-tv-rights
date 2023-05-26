@@ -115,6 +115,10 @@ function linkToCopy()
 		case 'playerStats':
 				$link = $url . '/export/playerStats/' . request('fixture') . '/' . request('player');
 			break;
+
+		case 'general':
+				$link = $url . '/export/general/' . request('fixture');
+			break;
 	}
 
 	if (get('bolivia')) {

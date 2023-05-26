@@ -705,4 +705,150 @@ class ExportController extends Controller
 
         return view('export.player-stats', compact('data', 'stats', 'position'));
     }
+
+    public function general($fixture)
+    {
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+
+        $response = json($response->body());
+
+        $lineups['local']['team'] = $response->matchInfo->contestant[0]->name;
+        $lineups['local']['formation'] = $response->liveData->lineUp[0]->formationUsed;
+
+        $j = 0;
+
+        for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
+            if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
+                    $lineups['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                    $lineups['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
+                } else {
+                    $lineups['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                    $lineups['local']['substitutes'][$j]['name'] = isset($response->liveData->lineUp[0]->player[$i]->shortFirstName) ? $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName : $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
+                    $j++;
+                }  
+        }
+
+        $lineups['local']['coach'] = $response->liveData->lineUp[0]->teamOfficial->shortFirstName . ' ' . $response->liveData->lineUp[0]->teamOfficial->shortLastName;
+
+        $lineups['away']['team'] = $response->matchInfo->contestant[1]->name;
+        $lineups['away']['formation'] = $response->liveData->lineUp[1]->formationUsed;
+
+        $j = 0;
+
+        for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
+            if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
+                $lineups['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
+                $lineups['away']['startXI'][$i]['name'] = isset($response->liveData->lineUp[1]->player[$i]->shortFirstName) ? $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName : $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
+            } else {
+                $lineups['away']['substitutes'][$j]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
+                $lineups['away']['substitutes'][$j]['name'] = isset($response->liveData->lineUp[1]->player[$i]->shortFirstName) ? $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName : $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
+                $j++;
+            }
+        }
+
+        $lineups['away']['coach'] = $response->liveData->lineUp[1]->teamOfficial->shortFirstName . ' ' . $response->liveData->lineUp[1]->teamOfficial->shortLastName;
+
+        $array = [count($lineups['away']['substitutes']), count($lineups['local']['substitutes'])];
+        $max = max($array);
+
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchstats/' . $this->outletKey . '/' . $fixture . '?detailed=yes&_rt=b&_fmt=json');
+
+        $contestantIdHome = json($response->body())->matchInfo->contestant[0]->id;
+        $contestantIdAway = json($response->body())->matchInfo->contestant[1]->id;
+
+        $red = [];
+        $yellow = [];
+
+        foreach (json($response->body())->liveData->card as $card) {
+            if ($contestantIdHome == $card->contestantId && $card->type == 'RC') {
+                $red['home'][] = $card->timeMin;
+            }
+
+            if ($contestantIdAway == $card->contestantId && $card->type == 'RC') {
+                $red['away'][] = $card->timeMin;
+            }
+
+            if ($contestantIdHome == $card->contestantId && $card->type == 'YC') {
+                $yellow['home'][] = $card->timeMin;
+            }
+
+            if ($contestantIdAway == $card->contestantId && $card->type == 'YC') {
+                $yellow['away'][] = $card->timeMin;
+            }
+        }
+
+        $yellow['home'] = implode(', ', $yellow['home']);
+        $yellow['away'] = implode(', ', $yellow['away']);
+
+        $red['home'] = implode(', ', $red['home'] ?? []);
+        $red['away'] = implode(', ', $red['away'] ?? []);
+
+        $goals = [];
+
+        foreach (json($response->body())->liveData->goal as $goal) {
+            if ($contestantIdHome == $goal->contestantId) {
+                $goals['home'][] = $goal->timeMin;
+            }
+
+            if ($contestantIdAway == $goal->contestantId) {
+                $goals['away'][] = $goal->timeMin;
+            }
+        }
+
+        $goals['home'] = implode(', ', $goals['home'] ?? []);
+        $goals['away'] = implode(', ', $goals['away'] ?? []);
+
+        $response = http()
+            ->withToken($this->token)
+            ->get('https://api.performfeeds.com/soccerdata/matchevent/' . $this->outletKey . '/' . $fixture . '?_rt=b&_fmt=json');
+
+        $offside = [];
+
+        foreach (json($response->body())->liveData->event as $event) {
+            if ($event->contestantId == $contestantIdHome && $event->typeId == 2) {
+                $offside['home'][] = $event->timeMin;
+            }
+
+            if ($event->contestantId == $contestantIdAway && $event->typeId == 2) {
+                $offside['away'][] = $event->timeMin;
+            }
+
+            if ($event->typeId == 17) {
+                $qualifierId = array_column($event->qualifier, 'qualifierId');
+
+                if (in_array(32, $qualifierId)) {
+                    if ($event->contestantId == $contestantIdHome) {
+                        $secondYellow['home'][] = $event->timeMin;
+                    }
+
+                    if ($event->contestantId == $contestantIdAway) {
+                        $secondYellow['away'][] = $event->timeMin;
+                    }
+                }
+            }
+
+            if ($event->contestantId == $contestantIdHome && $event->typeId == 84) {
+                $var['home'][] = $event->timeMin;
+            }
+
+            if ($event->contestantId == $contestantIdAway && $event->typeId == 84) {
+                $var['away'][] = $event->timeMin;
+            }
+        }
+
+        $offside['home'] = implode(', ', $offside['home'] ?? []);
+        $offside['away'] = implode(', ', $offside['away'] ?? []);
+
+        $secondYellow['home'] = implode(', ', $secondYellow['home'] ?? []);
+        $secondYellow['away'] = implode(', ', $secondYellow['away'] ?? []);
+
+        $var['home'] = implode(', ', $var['home'] ?? []);
+        $var['away'] = implode(', ', $var['away'] ?? []);
+
+        return view('export.general', compact('var', 'max', 'goals', 'lineups', 'red', 'yellow', 'offside', 'secondYellow'));
+    }
 }

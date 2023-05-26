@@ -51,6 +51,7 @@ $route->get('/export/stats/{fixture?}', [ExportController::class, 'stats']);
 $route->get('/export/score/{fixture}', [ExportController::class, 'score']);
 $route->get('/export/referees/{fixture}', [ExportController::class, 'referees']);
 $route->get('/export/playerStats/{fixture}/{player}', [ExportController::class, 'playerStats']);
+$route->get('/export/general/{fixture}', [ExportController::class, 'general']);
 
 // Users
 $route->resource('/dashboard/users', UserController::class);
