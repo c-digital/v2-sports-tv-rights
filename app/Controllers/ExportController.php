@@ -11,7 +11,6 @@ class ExportController extends Controller
     public function __construct()
     {
         $this->token = token();
-
         $this->outletKey = '1kfk2u28ef3ut1nm5o9tozdg65';
     }
 
@@ -717,17 +716,21 @@ class ExportController extends Controller
         $lineups['local']['team'] = $response->matchInfo->contestant[0]->name;
         $lineups['local']['formation'] = $response->liveData->lineUp[0]->formationUsed;
 
+        $players = [];
+
         $j = 0;
 
-        for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) { 
+        for ($i = 0; $i <= count($response->liveData->lineUp[0]->player) - 1; $i++) {
+            $players[] = $response->liveData->lineUp[0]->player[$i];
+
             if ($response->liveData->lineUp[0]->player[$i]->position != 'Substitute') {
-                    $lineups['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                    $lineups['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
-                } else {
-                    $lineups['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
-                    $lineups['local']['substitutes'][$j]['name'] = isset($response->liveData->lineUp[0]->player[$i]->shortFirstName) ? $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName : $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
-                    $j++;
-                }  
+                $lineups['local']['startXI'][$i]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                $lineups['local']['startXI'][$i]['name'] = $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName;
+            } else {
+                $lineups['local']['substitutes'][$j]['number'] = $response->liveData->lineUp[0]->player[$i]->shirtNumber;
+                $lineups['local']['substitutes'][$j]['name'] = isset($response->liveData->lineUp[0]->player[$i]->shortFirstName) ? $response->liveData->lineUp[0]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[0]->player[$i]->shortLastName : $response->liveData->lineUp[0]->player[$i]->firstName . ' ' . $response->liveData->lineUp[0]->player[$i]->lastName;
+                $j++;
+            }  
         }
 
         $lineups['local']['coach'] = $response->liveData->lineUp[0]->teamOfficial->shortFirstName . ' ' . $response->liveData->lineUp[0]->teamOfficial->shortLastName;
@@ -737,7 +740,9 @@ class ExportController extends Controller
 
         $j = 0;
 
-        for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) { 
+        for ($i = 0; $i <= count($response->liveData->lineUp[1]->player) - 1; $i++) {
+            $players[] = $response->liveData->lineUp[1]->player[$i];
+
             if ($response->liveData->lineUp[1]->player[$i]->position != 'Substitute') {
                 $lineups['away']['startXI'][$i]['number'] = $response->liveData->lineUp[1]->player[$i]->shirtNumber;
                 $lineups['away']['startXI'][$i]['name'] = isset($response->liveData->lineUp[1]->player[$i]->shortFirstName) ? $response->liveData->lineUp[1]->player[$i]->shortFirstName . ' ' . $response->liveData->lineUp[1]->player[$i]->shortLastName : $response->liveData->lineUp[1]->player[$i]->firstName . ' ' . $response->liveData->lineUp[1]->player[$i]->lastName;
@@ -764,20 +769,25 @@ class ExportController extends Controller
         $yellow = [];
 
         foreach (json($response->body())->liveData->card as $card) {
+            $array_column = array_column($players, 'playerId');
+            $playerIndex = array_search($card->playerId, $array_column);
+
+            $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;
+
             if ($contestantIdHome == $card->contestantId && $card->type == 'RC') {
-                $red['home'][] = $card->timeMin;
+                $red['home'][] = $player . ' ' . $card->timeMin;
             }
 
             if ($contestantIdAway == $card->contestantId && $card->type == 'RC') {
-                $red['away'][] = $card->timeMin;
+                $red['away'][] = $player . ' ' . $card->timeMin;
             }
 
             if ($contestantIdHome == $card->contestantId && $card->type == 'YC') {
-                $yellow['home'][] = $card->timeMin;
+                $yellow['home'][] = $player . ' ' . $card->timeMin;
             }
 
             if ($contestantIdAway == $card->contestantId && $card->type == 'YC') {
-                $yellow['away'][] = $card->timeMin;
+                $yellow['away'][] = $player . ' ' . $card->timeMin;
             }
         }
 
@@ -790,12 +800,17 @@ class ExportController extends Controller
         $goals = [];
 
         foreach (json($response->body())->liveData->goal as $goal) {
+            $array_column = array_column($players, 'playerId');
+            $playerIndex = array_search($goal->scorerId, $array_column);
+
+            $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;
+
             if ($contestantIdHome == $goal->contestantId) {
-                $goals['home'][] = $goal->timeMin;
+                $goals['home'][] = $player . ' ' . $goal->timeMin;
             }
 
             if ($contestantIdAway == $goal->contestantId) {
-                $goals['away'][] = $goal->timeMin;
+                $goals['away'][] = $player . ' ' . $goal->timeMin;
             }
         }
 
@@ -809,12 +824,19 @@ class ExportController extends Controller
         $offside = [];
 
         foreach (json($response->body())->liveData->event as $event) {
+            if (isset($event->playerId)) {
+                $array_column = array_column($players, 'playerId');
+                $playerIndex = array_search($event->playerId, $array_column);
+
+                $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;                
+            }
+
             if ($event->contestantId == $contestantIdHome && $event->typeId == 2) {
-                $offside['home'][] = $event->timeMin;
+                $offside['home'][] = $player . ' ' . $event->timeMin;
             }
 
             if ($event->contestantId == $contestantIdAway && $event->typeId == 2) {
-                $offside['away'][] = $event->timeMin;
+                $offside['away'][] =  $player . ' ' . $event->timeMin;
             }
 
             if ($event->typeId == 17) {
@@ -822,21 +844,21 @@ class ExportController extends Controller
 
                 if (in_array(32, $qualifierId)) {
                     if ($event->contestantId == $contestantIdHome) {
-                        $secondYellow['home'][] = $event->timeMin;
+                        $secondYellow['home'][] =  $player . ' ' . $event->timeMin;
                     }
 
                     if ($event->contestantId == $contestantIdAway) {
-                        $secondYellow['away'][] = $event->timeMin;
+                        $secondYellow['away'][] =  $player . ' ' . $event->timeMin;
                     }
                 }
             }
 
             if ($event->contestantId == $contestantIdHome && $event->typeId == 84) {
-                $var['home'][] = $event->timeMin;
+                $var['home'][] =  $player . ' ' . $event->timeMin;
             }
 
             if ($event->contestantId == $contestantIdAway && $event->typeId == 84) {
-                $var['away'][] = $event->timeMin;
+                $var['away'][] =  $player . ' ' . $event->timeMin;
             }
         }
 

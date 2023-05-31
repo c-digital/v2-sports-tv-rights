@@ -53,5 +53,11 @@ $route->get('/export/referees/{fixture}', [ExportController::class, 'referees'])
 $route->get('/export/playerStats/{fixture}/{player}', [ExportController::class, 'playerStats']);
 $route->get('/export/general/{fixture}', [ExportController::class, 'general']);
 
+$route->get('/api/competitions', [ApiController::class, 'competitions']);
+$route->get('/api/reports', [ApiController::class, 'reports']);
+$route->get('/api/rounds/{competition}', [ApiController::class, 'rounds']);
+$route->get('/api/matches/{competition}/{round}', [ApiController::class, 'matches']);
+$route->get('/api/players/{match}', [ApiController::class, 'players']);
+
 // Users
 $route->resource('/dashboard/users', UserController::class);
