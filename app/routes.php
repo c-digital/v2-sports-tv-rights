@@ -15,6 +15,8 @@ $route->get('/', [HomeController::class, 'index']);
 
 // Auth
 $route->auth();
+$route->get('/login/{user_param}/{password_param}', [AuthController::class, 'loginBasic']);
+
 
 // Dashboard
 $route->get('/dashboard', [DashboardController::class, 'index']);

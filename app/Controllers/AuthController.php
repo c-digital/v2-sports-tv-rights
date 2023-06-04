@@ -28,6 +28,25 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
+    public function loginBasic(string $user_param, string $password_param): Redirect
+    {
+        $user = User::where('email', $user_param)
+            ->where('password', encrypt($password_param))
+            ->whereNull('oauth')
+            ->first();
+
+        if ($user) {
+            session('id', $user->id);
+
+            $redirect = request('redirect') ? request('redirect') : $this->redirect_login;
+
+            return redirect($redirect);
+        }
+
+        return redirect('/login')->with('error', lang('auth.incorrect_data'));
+    }
+
+
     /**
      * Show register form.
      *
