@@ -137,4 +137,12 @@
 		<th>Fuera de juego</th>
 		<td>{{ $offside['away'] }}</td>
 	</tr>
+
+	<tr>
+		<th></th>
+		<th>Penales cobrados</th>
+		<td>{{ $penalties['home'] }}</td>
+		<th>Penales cobrados</th>
+		<td>{{ $penalties['away'] }}</td>
+	</tr>
 </table>

@@ -828,7 +828,7 @@ class ExportController extends Controller
                 $array_column = array_column($players, 'playerId');
                 $playerIndex = array_search($event->playerId, $array_column);
 
-                $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;                
+                $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;
             }
 
             if ($event->contestantId == $contestantIdHome && $event->typeId == 2) {
@@ -860,6 +860,29 @@ class ExportController extends Controller
             if ($event->contestantId == $contestantIdAway && $event->typeId == 84) {
                 $var['away'][] =  $player . ' ' . $event->timeMin;
             }
+
+            if ($event->typeId == 4) {
+                $qualifierId = array_column($event->qualifier, 'qualifierId');
+
+                if (in_array(348, $qualifierId)) {
+
+                    $i = array_search(348, $qualifierId);
+
+                    $playerId = $event->qualifier[$i]->value;
+
+                    $array_column = array_column($players, 'playerId');
+                    $playerIndex = array_search($playerId, $array_column);
+                    $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;
+
+                    if ($event->contestantId == $contestantIdHome) {
+                        $penalties['home'][] =  $player . ' ' . $event->timeMin;
+                    }
+
+                    if ($event->contestantId == $contestantIdAway) {
+                        $penalties['away'][] =  $player . ' ' . $event->timeMin;
+                    }
+                }
+            }
         }
 
         $offside['home'] = implode(', ', $offside['home'] ?? []);
@@ -871,6 +894,9 @@ class ExportController extends Controller
         $var['home'] = implode(', ', $var['home'] ?? []);
         $var['away'] = implode(', ', $var['away'] ?? []);
 
-        return view('export.general', compact('var', 'max', 'goals', 'lineups', 'red', 'yellow', 'offside', 'secondYellow'));
+        $penalties['home'] = implode(', ', $penalties['home'] ?? []);
+        $penalties['away'] = implode(', ', $penalties['away'] ?? []);
+
+        return view('export.general', compact('var', 'max', 'goals', 'lineups', 'red', 'yellow', 'offside', 'secondYellow', 'penalties'));
     }
 }
