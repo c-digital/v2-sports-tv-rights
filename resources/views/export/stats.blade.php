@@ -103,4 +103,10 @@
         <td class="center">Precisión %</td>
         <td>{{ $data[$away]['precision'] ?? 0 }}</td>
     </tr>
+
+    <tr>
+        <td class="right">{{ $data[$local]['goals'] ?? 0 }}</td>
+        <td class="center">Resultado</td>
+        <td>{{ $data[$away]['goals'] ?? 0 }}</td>
+    </tr>
 </table>

@@ -2,6 +2,7 @@
 	table, tr, td, th {
 		border: 1px solid black;
 		border-collapse: collapse;
+		margin-bottom: 10px;
 	}
 
 	th {
@@ -146,3 +147,5 @@
 		<td>{{ $penalties['away'] }}</td>
 	</tr>
 </table>
+
+<a href="?xml=1">Descargar como XML</a>

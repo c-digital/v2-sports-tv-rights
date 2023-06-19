@@ -1,5 +1,22 @@
 <?php
 
+function arrayToXml($data, &$xmlData)
+{
+    foreach( $data as $key => $value ) {
+        if( is_array($value) ) {
+            if( is_numeric($key) ){
+                $key = 'item' . $key;
+            }
+
+            $subnode = $xmlData->addChild($key);
+            arrayToXml($value, $subnode);
+        } else {
+            $xmlData->addChild("$key", htmlspecialchars("$value"));
+        }
+     }
+}
+
+
 function queryString()
 {
 	$queryString = [];

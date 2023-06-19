@@ -5,6 +5,7 @@ namespace App\Controllers;
 use DateTime;
 use View;
 use Exception;
+use SimpleXMLElement;
 
 class ExportController extends Controller
 {
@@ -301,6 +302,10 @@ class ExportController extends Controller
 
             if (isset($data[$home]['accuratePass']) && isset($data[$home]['totalPass'])) {
                 $data[$home]['precision'] = number_format(($data[$home]['accuratePass'] / $data[$home]['totalPass']) * 100, 2);
+            }
+
+            if ($stat->type == 'goals') {
+                $data[$home]['goals'] = $stat->value;
             }
         }
 
@@ -769,25 +774,27 @@ class ExportController extends Controller
         $yellow = [];
 
         foreach (json($response->body())->liveData->card as $card) {
-            $array_column = array_column($players, 'playerId');
-            $playerIndex = array_search($card->playerId, $array_column);
+            if (isset($card->playerId)) {
+                $array_column = array_column($players, 'playerId');
+                $playerIndex = array_search($card->playerId, $array_column);
 
-            $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;
+                $player = $players[$playerIndex]->shortFirstName . ' ' . $players[$playerIndex]->shortLastName;
 
-            if ($contestantIdHome == $card->contestantId && $card->type == 'RC') {
-                $red['home'][] = $player . ' ' . $card->timeMin;
-            }
+                if ($contestantIdHome == $card->contestantId && $card->type == 'RC') {
+                    $red['home'][] = $player . ' ' . $card->timeMin;
+                }
 
-            if ($contestantIdAway == $card->contestantId && $card->type == 'RC') {
-                $red['away'][] = $player . ' ' . $card->timeMin;
-            }
+                if ($contestantIdAway == $card->contestantId && $card->type == 'RC') {
+                    $red['away'][] = $player . ' ' . $card->timeMin;
+                }
 
-            if ($contestantIdHome == $card->contestantId && $card->type == 'YC') {
-                $yellow['home'][] = $player . ' ' . $card->timeMin;
-            }
+                if ($contestantIdHome == $card->contestantId && $card->type == 'YC') {
+                    $yellow['home'][] = $player . ' ' . $card->timeMin;
+                }
 
-            if ($contestantIdAway == $card->contestantId && $card->type == 'YC') {
-                $yellow['away'][] = $player . ' ' . $card->timeMin;
+                if ($contestantIdAway == $card->contestantId && $card->type == 'YC') {
+                    $yellow['away'][] = $player . ' ' . $card->timeMin;
+                }
             }
         }
 
@@ -896,6 +903,25 @@ class ExportController extends Controller
 
         $penalties['home'] = implode(', ', $penalties['home'] ?? []);
         $penalties['away'] = implode(', ', $penalties['away'] ?? []);
+
+        if (get('xml')) {
+            $data = [
+                'lineups' => $lineups,
+                'reds' => $red,
+                'secondYellow' => $secondYellow,
+                'yellow' => $yellow,
+                'goals' => $goals,
+                'var' => $var,
+                'offside' => $offside,
+                'penalties' => $penalties
+            ];
+
+            $xmlData = new SimpleXMLElement('<?xml version="1.0"?><data></data>');
+            arrayToXml($data, $xmlData);
+            $result = $xmlData->asXML('general.xml');
+
+            return storage()->download('general.xml');
+        }
 
         return view('export.general', compact('var', 'max', 'goals', 'lineups', 'red', 'yellow', 'offside', 'secondYellow', 'penalties'));
     }
